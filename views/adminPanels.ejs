@@ -1,0 +1,82 @@
+<%- include('../templates/head') %>
+
+<body>
+    <h1>Admin Panels</h1>
+  
+  <a href="/" class="button">Go to Client View</a>
+  <a href="/api/chat/chatAdmin" class="button">Go to Chat-Admin</a>
+    
+    <!-- GET Form -->
+    <div class="centralForm">
+      <h2>Product List</h2>
+      
+      <div class="introForm">          
+        <form action="/api/admin/products" method="GET" class="actualForm">
+            <p>For a full product list leave the field empty. If you want an specific product enter the ID (just numbers)</p>
+            <label for="getById">Get Product by ID:</label>
+            <input type="text" name="idNumber" id="getById">
+          <button type="submit">Request Product List</button>
+        </form>
+      </div>
+    </div>
+  
+    <!-- POST Form -->
+    <div class="centralForm">
+      <h2>Add Product (POST)</h2>
+  
+      <div class="introForm">
+        <form action="/api/products" method="POST" class="actualForm">
+          <p>All fields required.</p>
+          
+          <label for="productTitle">Product Title:</label>
+          <input type="text" name="title" id="productTitle" required/>
+          <label for="productPrice">Product Price:</label>
+          <input type="text" name="price" id="productPrice" required/>
+          <label for="productthumbnail">Product Thumbnail:</label>
+          <input type="text" name="thumbnail" id="productThumbnail" required/>
+          <button type="submit" id="postButton">Send Product Data</button>
+        </form>
+      </div>
+    </div>
+  
+    <!-- Pseudo PUT Form -->
+    
+    <div class="centralForm">
+      <h2>Product Data Modifier (PUT)</h2>
+  
+      <div class="introForm">
+        <form action="/api/products/put" method="POST" class="actualForm">
+  
+          <p><span style="text-decoration:underline;">Note:</span> Leaving the inputs empty copy the original value. ID field required.</p>  
+  
+          <label for="productId">Producto ID to Modify (only numbers):</label>
+          <input type="text" name="id" id="productId" required >
+          <label for="productTitle">Product Title:</label>
+          <input type="text" name="title" id="productTitle" >
+          <label for="productPrice">Product Price:</label>
+          <input type="text" name="price" id="productPrice" >
+          <label for="productthumbnail">Product Thumbnail:</label>
+          <input type="text" name="thumbnail" id="productThumbnail" />
+          <button type="submit">Send Product Data</button>
+        </form>
+      </div>
+    </div>
+  
+    <!-- Pseudo DELETE Form -->
+    <div class="centralForm">
+      <h2>Product List</h2>
+      
+      <div class="introForm">          
+        <form action="/api/products/delete" method="POST" class="actualForm">
+            <p>Delete a product from the DataBase by ID (Field required).</p>
+            <label for="getById">Delete by ID:</label>
+            <input type="text" name="id" id="getById" required>
+          <button type="submit" id="deleteButton">Delete Product</button>
+        </form>
+      </div>
+    </div>
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.js" integrity="sha512-9mpsATI0KClwt+xVZfbcf2lJ8IFBAwsubJ6mI3rtULwyM3fBmQFzj0It4tGqxLOGQwGfJdk/G+fANnxfq9/cew==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  </body>
+  </html>
+  

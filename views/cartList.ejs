@@ -1,0 +1,33 @@
+<%- include('../templates/head') %>
+
+<body>
+        <h1>Cart</h1>
+        <a href="/" class="button">Back to Home</a>
+
+        <div class="productList">
+            
+            <%- include('../templates/miniCardCart', { cartListRender }) %>
+            
+        </div>
+        <div class="productList">
+            <h2>Total: <%- cartAmount %> €</h2><br>
+        </div>
+        
+        <a href="/" class="button">Back to Home</a>
+        
+  <script>
+      
+      $('body').on('click', '.cartRemoveButton', (e) => {
+          let idToRemove = Number(e.currentTarget.childNodes[1].innerHTML);
+
+          fetch(`/api/cart/products/${idToRemove}`, {
+            method: 'delete',
+            headers: { 'Content-Type' : 'application/json' },
+            cache: 'no-cache'
+            })
+            location.reload();
+        })
+  </script>        
+</body>
+</html>
+

@@ -1,0 +1,39 @@
+<%- include('../templates/head') %>
+
+<body>
+        <h1>Product List for Admin</h1>
+        <a href="/api/admin" class="button">Back to Admin Panels</a>
+
+        <div class="productList">
+            <%- include('../templates/miniCardAdmin', { productList }) %>
+        </div>
+        
+        <a href="/api/admin" class="button">Back to Admin Panels</a>
+
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.js" integrity="sha512-9mpsATI0KClwt+xVZfbcf2lJ8IFBAwsubJ6mI3rtULwyM3fBmQFzj0It4tGqxLOGQwGfJdk/G+fANnxfq9/cew==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+      const socket = io();
+
+        socket.on('productsSocket', data => {
+            socket.emit('productsSocket', data);
+        })
+
+
+        socket.on('refreshList', () => {
+            console.log('Recibo el aviso de refrescar en el cliente')
+            console.log('llego el pedido de refresh al cliente') 
+            fetch('http://localhost:8080/api/products/refreshList')
+            .then(response => response.json())
+            .then( productList => {
+                $(".productList").empty();
+
+                for (obj of productList) {
+                    $(".productList").append(`<div class="miniCard"><img src=${obj.thumbnail} class="imgMiniCard"><h3>${obj.title}</h3><h3>Price: ${obj.price} €</h3><h3>Product ID: ${obj.id}</h3></div>`)}
+            })
+            .catch(error => console.log("Whoops something's wrong"))
+        })
+  </script>        
+</body>
+</html>
+

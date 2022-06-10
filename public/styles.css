@@ -1,0 +1,209 @@
+/* HTML TAGS */
+
+html {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Nunito", sans-serif;
+    color: rgb(17, 17, 17);
+    font-size: 20px;
+}
+
+body {
+    background-color: rgb(141, 111, 167);
+}
+
+a {
+    text-decoration: none;
+}
+
+h1 {
+    text-align: center;
+    font-size: 2.5rem;
+}
+
+button {
+    background-color: rgb(61, 0, 85);
+    color: azure;
+    border-color: blueviolet;
+}
+
+button:hover {
+    background-color: rgb(141, 111, 167);
+    color: rgb(17, 17, 17);
+    border: 2px solid rgb(17, 17, 17);
+    cursor: pointer;
+}
+
+/* CLASES */
+.button {
+    background-color: rgb(61, 0, 85);
+    color: azure;
+    border: 2px solid blueviolet;
+    border-radius: 0.2rem;
+    width: fit-content;
+    padding: 0.2rem .4rem;
+    margin: 1rem auto 0;
+}
+
+.button:hover {
+    background-color: rgb(141, 111, 167);
+    color: rgb(17, 17, 17);
+    border: 2px solid rgb(17, 17, 17);
+    cursor: pointer;
+}
+
+.centralForm {
+    background-color: rgb(221, 221, 221);
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    border-radius: 1rem;
+    max-width: 500px;
+    margin: 2rem auto;    
+    padding: 1rem 0 2rem;
+    box-shadow: 5px 5px 10px 3px rgba(0, 0, 0, 0.3);
+}
+
+.actualForm {
+    display: flex;
+    flex-direction:column;    
+    width: 80%;
+    margin: 0 auto;
+}
+
+.actualForm label {
+    margin: 0.2rem 0;
+    align-self: flex-start;
+}
+
+.actualForm input {
+    margin: 0.2rem 0;
+    width: 70%;
+    align-self: flex-end;
+}
+
+.actualForm button {
+    font-size: 1.2rem;
+    padding: 0.3rem 1rem;
+    margin-top: 1.5rem;
+    width:fit-content;
+    border-radius: 0.3rem;
+    align-self: center;
+}
+
+.centralForm > h2 {
+    text-decoration: underline;
+    font-size: 1.5;
+    margin: 0 auto 1.2rem auto;
+}
+
+.productLister {
+    background-color: blue;
+}
+
+.productList {
+    background-color: rgb(221, 221, 221);
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items:flex-start;
+    /* justify-content manage the space between the elements */
+    justify-content: center;
+    border-radius: 1rem;
+    max-width: 80%;
+    margin: 2rem auto;    
+    padding: 1rem 0 2rem;
+    box-shadow: 5px 5px 10px 3px rgba(0, 0, 0, 0.3);
+}
+
+.miniCard {
+    width: 200px;
+    height: max-content;
+    margin: 1rem 0.5rem;
+    padding: 1rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(61, 0, 85);
+    border-radius: 0.6rem;
+}
+
+.miniCard > h3 {
+    margin: 0.25rem 0.5rem 0.25rem 0.5rem;
+    font-size: 1rem;
+    color: rgb(221, 221, 221);
+}
+
+.miniCard img {
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 0.25rem;
+    border-radius: 0.2rem;
+    object-fit: scale-down;
+    background-color: white;
+}
+
+.inputField {
+    display: flex;
+    justify-content: space-between;   
+    width: 80%;
+    margin: 0 auto;
+}
+
+.inputField input {
+    width: calc(100% - 1rem);
+    border: none;
+    background-color: azure;
+    border-top: 1px solid black;
+    border-radius: 0 0 0 0.5rem;
+}
+
+.inputField button {
+    border-radius: 0 0 0.5rem 0;
+}
+
+#textZone {
+    height: 15rem;
+    background-color:azure;
+    border-radius: 0.5rem 0.5rem 0 0;
+    /* display:flex; */
+    /* flex-direction: column; */
+    justify-content:end;
+    overflow-y: scroll;
+}
+
+.customerMsg {
+    background-color: rgb(245, 245, 240);
+    text-align: right;
+    font-size: 0.8rem;
+    padding: 0.25rem 1rem 0.25rem 0.3rem;
+    margin: 0;
+    overflow-wrap: break-word;
+}
+
+.customerMsg span {
+    font-size: 0.6rem;
+    color: dimgray;
+}
+
+.adminMsg {
+    background-color: azure;
+    text-align: left;
+    font-size: 0.8rem;
+    padding: 0.25rem 1rem 0.25rem 0.3rem;
+    margin: 0;
+    overflow-wrap: break-word;
+}
+
+.adminMsg span {
+    font-size: 0.6rem;
+    color: dimgray;
+}
+
+.cartRemoveButton {
+    background-color: rgb(141, 111, 167);
+}
+
+.cartRemoveButton span {
+    display: none;
+}

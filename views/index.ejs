@@ -1,0 +1,34 @@
+<%- include('../templates/head') %> 
+
+<body>
+  <h1 class="actualForm">Find a product since you can't find yourself...</h1>
+
+  <a href="/api/cart/products" class="button">Go to Cart</a>
+
+    <div class="productList">
+        <%- include('../templates/miniCard', { productList }) %>
+    </div>
+
+    
+  <!-- Custumer Chat -->
+
+  <div class="centralForm">
+    <h2>Customer Chat</h2>
+    
+    <div class="introForm" id="chatBox">
+      <p class="actualForm" id="chatTitle">Any doubts? write us here:</p>          
+      <form action="#" method="POST" class="actualForm" id="emailForm">          
+          <label for="emailInput">e-mail:</label>
+          <input type="email" name="id" id="emailInput" required>
+        <button type="submit" id="startChatButton">Start Chat</button>
+      </form>
+    </div>
+  </div>
+
+  <a href="/api/admin" class="button">Admin Panel</a>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.js" integrity="sha512-9mpsATI0KClwt+xVZfbcf2lJ8IFBAwsubJ6mI3rtULwyM3fBmQFzj0It4tGqxLOGQwGfJdk/G+fANnxfq9/cew==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="/index.js"></script>
+</body>
+</html>

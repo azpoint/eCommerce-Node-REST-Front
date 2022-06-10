@@ -1,0 +1,8 @@
+<% for (obj of cartListRender) { %>
+    <div class="miniCard">
+        <img src="<%= obj.thumbnail %>" class="imgMiniCard">
+        <h3><%= obj.title %></h3>
+        <h3>Price: <%= obj.price %> €</h3>
+        <button class="cartRemoveButton">Remove <span><%= obj.id %></span></button>
+    </div>
+<% } %>

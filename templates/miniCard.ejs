@@ -1,0 +1,9 @@
+<% for (obj of productList ) { %>
+    <div class="miniCard">
+        <img src="<%= obj.thumbnail %>" class="imgMiniCard">
+        <h3><%= obj.title %></h3>
+        <h3>Price: <%= obj.price %> €</h3>
+        <h3>Product ID: <%= obj.id %> </h3>
+        <button class="cartRemoveButton">Add to Cart<span><%= obj.id %></span></button>
+    </div>
+<% } %>
