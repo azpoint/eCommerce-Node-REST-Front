@@ -1,21 +1,29 @@
 //------- Dependencies -------
-const fs = require('fs');
 const express = require('express');
 const { Router } = express;
 const app = express();
 
-const { Server: IOServer } = require('socket.io');
-const { Server: HttpServer } = require('http');
-
-const httpServer = new HttpServer(app);
-const io = new IOServer(httpServer);
+const { initSetup } = require('../db/setup/dbSetup.js');
+const knex = require('knex')( initSetup );
 
 
 //-------- Modules --------
-const Contenedor = require('../operative/productHandler.js');
+const Contenedor = require('../operative/productHandlerDB.js');
 
 //--------- Database ---------
-let baseProducts = JSON.parse(fs.readFileSync('./db/products.json'));
+  let baseProducts = knex
+    .from('products')
+    .select('*')
+    .then( res => {
+        baseProducts = res;
+        return baseProducts;
+    })
+    .then( () => {
+        console.log('Products Loaded')
+    })
+    .catch( error =>  console.log(error.message))
+    .finally( () => knex.destroy())
+
 
 //------- Router --------
 
@@ -27,12 +35,9 @@ const productsRouter = Router();
 
 let productList = new Contenedor(baseProducts);
 
-productList.idStarter();
-
 
 productsRouter.get('/:idNumber', (req, res, next) => {
 
-    io.sockets.emit('productRefresh', 'POST');
 
     if (productList.getLast().id < req.params.idNumber) {
         return res.status(200).render('error', { message: 'This product is not available' })
@@ -51,14 +56,13 @@ productsRouter.post('', ( req, res, next) => {
     
     productList.exportProducts();
 
-    io.sockets.emit('productRefresh', 'POST');
-
     next();
 })
 
 
-productsRouter.get('/refreshList', (req, res, next) => {
-    res.json(productList.getAll());
+productsRouter.get('', (req, res, next) => {
+    res.send('Ejaqui')
+    console.log(productList.getAll())
     next();
 })
 
@@ -78,8 +82,6 @@ productsRouter.post('/put', (req, res, next) => {
     res.status(200).json(productList.getById(req.body.id));
 
     productList.exportProducts();
-
-    io.sockets.emit('productRefresh', 'PUT');
     
     next()
 })
