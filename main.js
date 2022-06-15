@@ -11,8 +11,9 @@ const cartRouter = require('./routers/cartRouter.js');
 const adminRouter = require('./routers/adminRouter.js');
 
 // -------- DB --------
+const { initSetup } = require('./db/setup/dbSetup.js');
+const knex = require('knex')( initSetup );
 
-let productList = JSON.parse(fs.readFileSync('./db/products.json'));
 //------- APP -------
 const app = express();
 const httpServer = new HttpServer(app);
@@ -48,8 +49,11 @@ app.use(express.static('./public'));
 
 httpServer.listen(PORT, () => { console.log(`Server ready and listening on port ${PORT}.`)}).on( 'err', err => { console.error(`Error in the server: \n { ${{err}}`)})
 
-app.get('/', (req, res, next) => {
-    res.render('index', { productList })
+app.get('/', (req, res) => {
+    knex.from('products').select('*').then( resp => {
+        let productList = resp;
+        res.render('index', { productList })
+    })
 })
 
 let messages = [];

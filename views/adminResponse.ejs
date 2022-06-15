@@ -4,11 +4,16 @@
         <h1>Product List for Admin</h1>
         <a href="/api/admin" class="button">Back to Admin Panels</a>
 
+
         <div class="productList">
             <%- include('../templates/miniCardAdmin', { productList }) %>
         </div>
+        <div class="productList">
+            <h2> <%= message %></h2>
+        </div>
         
-        <a href="/api/admin" class="button">Back to Admin Panels</a>      
+        <a href="/api/admin" class="button">Back to Admin Panels</a>
+      
 </body>
 </html>
 

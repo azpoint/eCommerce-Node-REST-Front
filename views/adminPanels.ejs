@@ -25,7 +25,7 @@
       <h2>Add Product (POST)</h2>
   
       <div class="introForm">
-        <form action="/api/products" method="POST" class="actualForm">
+        <form action="/api/admin/products" method="POST" class="actualForm">
           <p>All fields required.</p>
           
           <label for="productTitle">Product Title:</label>
@@ -45,7 +45,7 @@
       <h2>Product Data Modifier (PUT)</h2>
   
       <div class="introForm">
-        <form action="/api/products/put" method="POST" class="actualForm">
+        <form action="/api/admin/products/put" method="POST" class="actualForm">
   
           <p><span style="text-decoration:underline;">Note:</span> Leaving the inputs empty copy the original value. ID field required.</p>  
   
@@ -54,7 +54,7 @@
           <label for="productTitle">Product Title:</label>
           <input type="text" name="title" id="productTitle" >
           <label for="productPrice">Product Price:</label>
-          <input type="text" name="price" id="productPrice" >
+          <input type="number" name="price" id="productPrice" min="0" >
           <label for="productthumbnail">Product Thumbnail:</label>
           <input type="text" name="thumbnail" id="productThumbnail" />
           <button type="submit">Send Product Data</button>
@@ -67,10 +67,10 @@
       <h2>Product List</h2>
       
       <div class="introForm">          
-        <form action="/api/products/delete" method="POST" class="actualForm">
+        <form action="/api/admin/products/delete" method="POST" class="actualForm">
             <p>Delete a product from the DataBase by ID (Field required).</p>
             <label for="getById">Delete by ID:</label>
-            <input type="text" name="id" id="getById" required>
+            <input type="number" name="id" id="getById" min="0" required>
           <button type="submit" id="deleteButton">Delete Product</button>
         </form>
       </div>
