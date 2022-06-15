@@ -5,7 +5,6 @@ const { Server: HttpServer } = require('http');
 const fs = require('fs');
 
 //------- Modules --------
-const productsRouter = require('./routers/productsRouter.js');
 const chatRouter = require('./routers/chatRouter.js');
 const cartRouter = require('./routers/cartRouter.js');
 const adminRouter = require('./routers/adminRouter.js');
@@ -31,7 +30,6 @@ app.set('views', './views');
 app.use(express.json());
 app.use(express.urlencoded( { extended: true }));
 
-app.use('/api/products', productsRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/admin', adminRouter);
