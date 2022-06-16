@@ -13,6 +13,9 @@ const adminRouter = require('./routers/adminRouter.js');
 const { initSetup } = require('./db/setup/dbSetup.js');
 const knex = require('knex')( initSetup );
 
+const { initSetupLite } = require('./db/setup/dbsqliteSetup.js');
+const knexLite = require('knex')( initSetupLite );
+
 //------- APP -------
 const app = express();
 const httpServer = new HttpServer(app);
@@ -54,29 +57,27 @@ app.get('/', (req, res) => {
     })
 })
 
-let messages = [];
-
-messages = JSON.parse(fs.readFileSync('./db/chatMessages.json'));
 
 io.on('connection', socket => {
     console.log('New Connection');
-    
-    if (messages == []) {
-        null;
-    } else {
-        console.log('Recovering Messages...')
-        for ( msg of messages) {
-            socket.emit('myMessage', msg);
-        }
-    }
+
+    knexLite.from('messages').select('*')
+        .then( resp => {
+            for ( msg of resp) {
+                socket.emit('myMessage', msg);}
+        })
 
     socket.on('recover-msg', incoming =>{
         if (incoming == true) {
-            for (msg of messages) {
-                socket.emit('recover-msg', msg)
-            }
-        }       
-    }) 
+
+            knexLite.from('messages').select('*')
+                .then( resp => {
+                    for (msg of resp) {
+                        socket.emit('recover-msg', msg);
+                    }       
+                })
+        }
+    })
 
     // io.sockets.emit('newUser', `New user connected ${socket.id}`)
     socket.emit('indexSocket', 'Index Socket Connected');
@@ -101,11 +102,8 @@ io.on('connection', socket => {
 
         message.date = time.toLocaleString();
 
-        messages.push(message);
-        console.log(messages);
-
-        // fs.promises.writeFile('./db/chatmessages.json', JSON.stringify(messages))
-        // .catch( error => console.error(error));
+        knexLite('messages')
+            .insert(message)
 
         socket.emit('myMessage', message);
         socket.broadcast.emit('message', message);

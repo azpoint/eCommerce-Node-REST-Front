@@ -14,7 +14,7 @@
         <form action="/api/admin/products" method="GET" class="actualForm">
             <p>For a full product list leave the field empty. If you want an specific product enter the ID (just numbers)</p>
             <label for="getById">Get Product by ID:</label>
-            <input type="text" name="idNumber" id="getById">
+            <input type="number" name="idNumber" id="getById" min="0">
           <button type="submit">Request Product List</button>
         </form>
       </div>
@@ -34,7 +34,7 @@
           <input type="text" name="price" id="productPrice" required/>
           <label for="productthumbnail">Product Thumbnail:</label>
           <input type="text" name="thumbnail" id="productThumbnail" required/>
-          <button type="submit" id="postButton">Send Product Data</button>
+          <button type="submit" id="postButton">Add Product Data</button>
         </form>
       </div>
     </div>
@@ -50,14 +50,14 @@
           <p><span style="text-decoration:underline;">Note:</span> Leaving the inputs empty copy the original value. ID field required.</p>  
   
           <label for="productId">Producto ID to Modify (only numbers):</label>
-          <input type="text" name="id" id="productId" required >
+          <input type="number" name="id" id="productId" min="0" required >
           <label for="productTitle">Product Title:</label>
           <input type="text" name="title" id="productTitle" >
           <label for="productPrice">Product Price:</label>
           <input type="number" name="price" id="productPrice" min="0" >
           <label for="productthumbnail">Product Thumbnail:</label>
           <input type="text" name="thumbnail" id="productThumbnail" />
-          <button type="submit">Send Product Data</button>
+          <button type="submit">Update Product Data</button>
         </form>
       </div>
     </div>
