@@ -5,7 +5,7 @@ const ProductsMySQL = require('../operative/productHandlerSQL')
 const { initSetup } = require('../db/setup/dbSetup.js');
 const knex = require('knex')( initSetup );
 
-const app = express();
+// const app = express();
 
 const adminRouter = Router();
 

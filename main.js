@@ -45,7 +45,6 @@ app.use(express.static('./public'));
 // })
 
 
-
 //-------- App req res --------
 
 httpServer.listen(PORT, () => { console.log(`Server ready and listening on port ${PORT}.`)}).on( 'err', err => { console.error(`Error in the server: \n { ${{err}}`)})
