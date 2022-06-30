@@ -1,3 +1,3 @@
 /node_modules
 /sqlite
-db/carts.sqlite
+/db/carts.sqlite

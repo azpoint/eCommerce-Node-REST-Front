@@ -7,10 +7,25 @@ $('body').on('click', '.cartRemoveButton', (e) => {
     let idToAdd = Number(e.currentTarget.childNodes[1].innerHTML);
 
     fetch(`/api/cart/products/${idToAdd}`, {
-      method: 'post',
-      headers: { 'Content-Type' : 'application/json' },
-      cache: 'no-cache'
-      })
+        method: 'post',
+        headers: { 'Content-Type' : 'application/json' },
+        cache: 'no-cache'
+    })
+
+    Toastify({
+        text: 'Product Added',
+        duration: 3000,
+        newWindow: false,
+        close: false,
+        gravity: "top",
+        position: "center",
+        stopOnFocus: true,
+        style: {
+        background: "rgb(141, 111, 167)",
+        
+        },
+        onClick: function(){}
+    }).showToast();
   }
 )
 
