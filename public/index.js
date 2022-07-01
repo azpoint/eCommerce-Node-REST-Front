@@ -4,7 +4,7 @@ const socket = io();
 // --------- JS ---------
 
 $('body').on('click', '.cartRemoveButton', (e) => {
-    let idToAdd = Number(e.currentTarget.childNodes[1].innerHTML);
+    let idToAdd = e.currentTarget.childNodes[1].innerHTML;
 
     fetch(`/api/cart/products/${idToAdd}`, {
         method: 'post',

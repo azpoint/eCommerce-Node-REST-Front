@@ -14,7 +14,7 @@
         <form action="/api/admin/products" method="GET" class="actualForm">
             <p>For a full product list leave the field empty. If you want an specific product enter the ID (just numbers)</p>
             <label for="getById">Get Product by ID:</label>
-            <input type="number" name="idNumber" id="getById" min="0">
+            <input type="text" name="idString" id="getById">
           <button type="submit">Request Product List</button>
         </form>
       </div>
@@ -49,8 +49,8 @@
   
           <p><span style="text-decoration:underline;">Note:</span> Leaving the inputs empty copy the original value. ID field required.</p>  
   
-          <label for="productId">Producto ID to Modify (only numbers):</label>
-          <input type="number" name="id" id="productId" min="0" required >
+          <label for="productId">Producto ID to Modify:</label>
+          <input type="text" name="id" id="productId" min="0" required >
           <label for="productTitle">Product Title:</label>
           <input type="text" name="title" id="productTitle" >
           <label for="productPrice">Product Price:</label>
@@ -70,7 +70,7 @@
         <form action="/api/admin/products/delete" method="POST" class="actualForm">
             <p>Delete a product from the DataBase by ID (Field required).</p>
             <label for="getById">Delete by ID:</label>
-            <input type="number" name="id" id="getById" min="0" required>
+            <input type="text" name="id" id="getById" required>
           <button type="submit" id="deleteButton">Delete Product</button>
         </form>
       </div>

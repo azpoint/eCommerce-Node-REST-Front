@@ -1,16 +1,13 @@
 const express = require('express');
 const { Router } = express;
-const ProductsMySQL = require('../operative/productHandlerSQL')
+const ProductsMongo = require('../operative/productHandlerMongo');
 
-const { initSetup } = require('../db/setup/dbSetup.js');
-const knex = require('knex')( initSetup );
-
-// const app = express();
+const db = require('../db/mongo/db');
+const productModel = require('../db/mongo/models/productsModel');
 
 const adminRouter = Router();
 
-const productsSQL = new ProductsMySQL(initSetup, 'products')
-
+const productsMongo = new ProductsMongo(db, productModel)
 
 //------- ROUTER -------
 
@@ -24,21 +21,20 @@ adminRouter.get('', (req, res, next) => {
 
 adminRouter.get('/products', (req, res) => {
 
-
-    if (req.query.idNumber == '') {
+    if (req.query.idString == '') {
         // ;(async () => {
-        //     const productList = await productsSQL.getAll()
+        //     const productList = await productsMongo.getAll()
         //     res.render('adminProducts', { productList })               
         // })()
         
-        return productsSQL.getAll()
+        return productsMongo.getAll()
         .then(productList => {
             res.render('adminProducts', { productList })
         })
     } else {
-        return productsSQL.getById(req.query.idNumber)
+        return productsMongo.getById(req.query.idString)
         .then( resp => {
-            if(resp == '') {
+            if(resp == []) {
                 let message = 'This product does not exist'
                 res.render('error', { message })
             }
@@ -56,26 +52,23 @@ adminRouter.post('/products', (req, res, next) => {
         stock: Math.floor(Math.random() * 101)
     };
 
-    return productsSQL.addProduct(productToAdd)
+    return productsMongo.addProduct(productToAdd)
     .then( resp => {
-        let productList = resp
+        let productList = [];
+        productList.push(resp)
         res.render('adminResponse', { productList, message: 'Product added successfully'})
+    }).catch( resp => {
+        let message = resp.message;
+        res.render('error', {message})
     })
-    .finally(_ => {
-        next()
-    })
-
 })
 
 adminRouter.post('/products/delete', (req, res) => {
-    return productsSQL.deleteById(req.body.id)
-    .then( (resp) => {
-        if (resp === 0) {
-        res.render('adminDeleteResponse', { message: 'This product is not in the DB'})
-        } else if (resp === 1) {
-            res.render('adminDeleteResponse', { message: 'Product deleted'})
-            
-        }
+    return productsMongo.deleteById(req.body.id)
+    .then( _ => {
+        res.render('adminDeleteResponse', { message: 'Product Deleted'}) 
+    }).catch( err => {
+        res.render('error', { message: 'The product you inserted does not exist' })
     })
 })
 
@@ -88,17 +81,19 @@ adminRouter.post('/products/put', (req, res) => {
     if (req.body.price !== '') { productUpdate.price = Number(req.body.price) }
     if (req.body.thumbnail !== '') { productUpdate.thumbnail = req.body.thumbnail }
     
-    return productsSQL.updateProduct(Number(req.body.id), productUpdate)
+    return productsMongo.updateProduct(req.body.id, productUpdate)
     .then( resp => {
-        if (resp !== 0) {
-            let productList = resp;
-            res.render('adminResponse', { productList, message: ' Product Updated'})
-        } else {
-            res.render('adminDeleteResponse', { message: 'This product does not exist'})
+        if (resp.acknowledged === true) {
+            return productsMongo.getById(req.body.id)
+            .then( resp => {
+                let productList = resp;
+                res.render('adminResponse', { productList, message: 'Product Updated'})
+
+            })
         }
     })
-    .catch( _ => {
-        res.render('error', { message: 'You need to add at least one vale' })
+    .catch( resp => {
+        res.render('error', { message: `This product does not exist: \n${resp.message}`})
     })
 })
 

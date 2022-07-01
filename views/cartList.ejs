@@ -18,7 +18,7 @@
   <script>
       
       $('body').on('click', '.cartRemoveButton', (e) => {
-          let idToRemove = Number(e.currentTarget.childNodes[1].innerHTML);
+          let idToRemove = e.currentTarget.childNodes[1].innerHTML;
 
           fetch(`/api/cart/products/${idToRemove}`, {
             method: 'delete',

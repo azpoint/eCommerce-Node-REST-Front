@@ -10,8 +10,12 @@ const cartRouter = require('./routers/cartRouter.js');
 const adminRouter = require('./routers/adminRouter.js');
 
 // -------- DB --------
-const { initSetup } = require('./db/setup/dbSetup.js');
-const knex = require('knex')( initSetup );
+
+const db = require('./db/mongo/db')
+const productModel = require('./db/mongo/models/productsModel');
+
+// const { initSetup } = require('./db/setup/dbSetup.js');
+// const knex = require('knex')( initSetup );
 
 const { initSetupLite } = require('./db/setup/dbsqliteSetup.js');
 const knexLite = require('knex')( initSetupLite );
@@ -50,8 +54,9 @@ app.use(express.static('./public'));
 httpServer.listen(PORT, () => { console.log(`Server ready and listening on port ${PORT}.`)}).on( 'err', err => { console.error(`Error in the server: \n { ${{err}}`)})
 
 app.get('/', (req, res) => {
-    knex.from('products').select('*').then( resp => {
-        let productList = resp;
+    db.then( _ => productModel.find())
+    .then( resp => {
+        let productList = resp
         res.render('index', { productList })
     })
 })
