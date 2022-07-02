@@ -111,7 +111,7 @@ button:hover {
     /* justify-content manage the space between the elements */
     justify-content: center;
     border-radius: 1rem;
-    max-width: 80%;
+    max-width: 800px;
     margin: 2rem auto;    
     padding: 1rem 0 2rem;
     box-shadow: 5px 5px 10px 3px rgba(0, 0, 0, 0.3);
