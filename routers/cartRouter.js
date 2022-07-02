@@ -23,29 +23,34 @@ cartRouter.get('/products', (req, res) => {
 
     return cart.getAllCart()
     .then( resp => {
+        let cartListRender = [];
         let cartList = [];
-        let cartQty = [];
+
         resp.forEach( item => {
             cartList.push(item.product_Id)
-            cartQty.push(item.qty)
         })
 
-        return productsMongo.getMany(cartList)
-        .then( resp => {
-            let cartListRender = resp;
+        ;(async () => {
+            cartListRender = await productsMongo.getMany(cartList);
+            for (let item of cartListRender) {
+                for (let item2 of resp) {
+                    if(item._id == item2.product_Id) {
+                        item.qty = item2.qty
+                    }
+                }
+            }
 
-            cartListRender.forEach( (item, index) => {
-                item.qty = cartQty[index];
-                cartAmount += item.price * (cartQty[index])
+            cartListRender.forEach( item => {
+                cartAmount += item.price *item.qty
             })
-            
             cartAmount.toFixed(2)
             res.render('cartList', { cartListRender, cartAmount })
-        })
-
+        })()
+        
     })
-
 })
+
+
 
 cartRouter.post('/products/:id', (req, res) => {    
     let idp = {
@@ -59,14 +64,8 @@ cartRouter.post('/products/:id', (req, res) => {
 
         if(itemCheck === 0) {
             return cart.addProduct(idp)
-            .then( resp => {
-                console.log('Add product', resp)
-            })
         } else {
             return cart.addQty(req.params.id)
-            .then( resp => {
-                console.log('Add Qty', resp)
-            })
         }
     })
 })
