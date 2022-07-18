@@ -3,7 +3,7 @@
 html {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing:border-box;
     font-family: "Nunito", sans-serif;
     color: rgb(17, 17, 17);
     font-size: 20px;
@@ -115,6 +115,38 @@ button:hover {
     margin: 2rem auto;    
     padding: 1rem 0 2rem;
     box-shadow: 5px 5px 10px 3px rgba(0, 0, 0, 0.3);
+}
+
+.logBar {
+    background-color: rgb(221, 221, 221);
+    max-width: 800px;
+    margin: 0 auto;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0 0 1rem 1rem;
+}
+
+.logBar h1 {
+    margin: 0 2rem;
+}
+
+.logButton {
+    background-color: rgb(76, 206, 93);
+    border-radius: 0.2rem;
+    font-size: larger;
+    padding: 0.2rem 0.3rem;
+    border: 2px solid rgb(37, 228, 62);
+    margin: 0 2rem;
+}
+
+.logOutButton {
+    background-color: rgb(184, 83, 83);
+    border-radius: 0.2rem;
+    font-size: larger;
+    padding: 0.2rem 0.3rem;
+    border: 2px solid rgb(228, 106, 106);
+    margin: 0 2rem;
 }
 
 .miniCard {

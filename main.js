@@ -4,15 +4,12 @@ const { Server: IOServer } = require('socket.io');
 const { Server: HttpServer } = require('http');
 const fs = require('fs');
 
+
 //------- Modules --------
+const mainRouter = require('./routers/mainRouter.js');
 const chatRouter = require('./routers/chatRouter.js');
 const cartRouter = require('./routers/cartRouter.js');
 const adminRouter = require('./routers/adminRouter.js');
-
-// -------- DB --------
-
-const db = require('./db/mongo/db')
-const productModel = require('./db/mongo/models/productsModel');
 
 // const { initSetup } = require('./db/setup/dbSetup.js');
 // const knex = require('knex')( initSetup );
@@ -37,10 +34,14 @@ app.set('views', './views');
 app.use(express.json());
 app.use(express.urlencoded( { extended: true }));
 
-app.use('/api/chat', chatRouter);
-app.use('/api/cart', cartRouter);
-app.use('/api/admin', adminRouter);
+app.use('/', mainRouter);
+app.use('/chat', chatRouter);
+app.use('/cart', cartRouter);
+app.use('/admin', adminRouter);
 app.use(express.static('./public'));
+
+
+
 
 //Error handler in the application! (no adddres required so it can cath any error)
 
@@ -53,13 +54,6 @@ app.use(express.static('./public'));
 
 httpServer.listen(PORT, () => { console.log(`Server ready and listening on port ${PORT}.`)}).on( 'err', err => { console.error(`Error in the server: \n { ${{err}}`)})
 
-app.get('/', (req, res) => {
-    db.then( _ => productModel.find())
-    .then( resp => {
-        let productList = resp
-        res.render('index', { productList })
-    })
-})
 
 
 io.on('connection', socket => {

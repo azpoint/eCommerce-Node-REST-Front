@@ -6,7 +6,7 @@ const socket = io();
 $('body').on('click', '.cartRemoveButton', (e) => {
     let idToAdd = e.currentTarget.childNodes[1].innerHTML;
 
-    fetch(`/api/cart/products/${idToAdd}`, {
+    fetch(`/cart/products/${idToAdd}`, {
         method: 'post',
         headers: { 'Content-Type' : 'application/json' },
         cache: 'no-cache'

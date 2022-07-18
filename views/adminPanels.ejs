@@ -1,17 +1,19 @@
 <%- include('../templates/head') %>
 
 <body>
-    <h1>Admin Panels</h1>
+
+  <%- include('../templates/logBar') %>
+  <h1>Admin Panels</h1>
   
   <a href="/" class="button">Go to Client View</a>
-  <a href="/api/chat/chatAdmin" class="button">Go to Chat-Admin</a>
+  <a href="/chat/chatAdmin" class="button">Go to Chat-Admin</a>
     
     <!-- GET Form -->
     <div class="centralForm">
       <h2>Product List</h2>
       
       <div class="introForm">          
-        <form action="/api/admin/products" method="GET" class="actualForm">
+        <form action="/admin/products" method="GET" class="actualForm">
             <p>For a full product list leave the field empty. If you want an specific product enter the ID (just numbers)</p>
             <label for="getById">Get Product by ID:</label>
             <input type="text" name="idString" id="getById">
@@ -25,7 +27,7 @@
       <h2>Add Product (POST)</h2>
   
       <div class="introForm">
-        <form action="/api/admin/products" method="POST" class="actualForm">
+        <form action="/admin/products" method="POST" class="actualForm">
           <p>All fields required.</p>
           
           <label for="productTitle">Product Title:</label>
@@ -45,7 +47,7 @@
       <h2>Product Data Modifier (PUT)</h2>
   
       <div class="introForm">
-        <form action="/api/admin/products/put" method="POST" class="actualForm">
+        <form action="/admin/products/put" method="POST" class="actualForm">
   
           <p><span style="text-decoration:underline;">Note:</span> Leaving the inputs empty copy the original value. ID field required.</p>  
   
@@ -67,7 +69,7 @@
       <h2>Product List</h2>
       
       <div class="introForm">          
-        <form action="/api/admin/products/delete" method="POST" class="actualForm">
+        <form action="/admin/products/delete" method="POST" class="actualForm">
             <p>Delete a product from the DataBase by ID (Field required).</p>
             <label for="getById">Delete by ID:</label>
             <input type="text" name="id" id="getById" required>

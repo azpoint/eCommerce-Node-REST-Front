@@ -1,0 +1,14 @@
+<%- include('../templates/head') %>
+
+<body>
+    <div class="centralForm">
+        <h1>Log in data</h1>
+        <form action="/login" method="post" class="actualForm">
+            <label for="logName">Username: </label>
+            <input type="text" id="logName" name="name">
+            <label for="logPass">Password: </label>
+            <input type="password" id="logPass" name="password">
+            <button type="submit">Get in!</button>
+        </form>
+    </div>
+</body>

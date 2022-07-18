@@ -12,10 +12,14 @@ const productsMongo = new ProductsMongo(db, productModel)
 //------- ROUTER -------
 
 
-adminRouter.get('', (req, res, next) => {
+adminRouter.get('', (req, res) => {
 
-    res.render('adminPanels')
-    next()
+    let logName = ''
+
+        if (req.session.logName) {
+            logName = req.session.logName;            
+        }
+        res.render('adminPanels', { logName });
 })
 
 
@@ -39,7 +43,7 @@ adminRouter.get('/products', (req, res) => {
                 res.render('error', { message })
             }
             let productList = resp
-            res.render('adminProducts', { productList })
+            res.render('adminProducts', { productList, logName })
         })
     }
 })
