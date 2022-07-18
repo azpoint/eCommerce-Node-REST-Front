@@ -1,14 +1,16 @@
 <%- include('../templates/head') %>
 
 <body>
-        <h1>Product List for Admin</h1>
-        <a href="/api/admin" class="button">Back to Admin Panels</a>
 
-        <div class="productList">
-            <%- include('../templates/miniCardAdmin', { productList }) %>
-        </div>
-        
-        <a href="/api/admin" class="button">Back to Admin Panels</a>      
+    <%- include('../templates/head') %>
+    <h1>Product List for Admin</h1>
+    <a href="/admin" class="button">Back to Admin Panels</a>
+
+    <div class="productList">
+        <%- include('../templates/miniCardAdmin', { productList }) %>
+    </div>
+    
+    <a href="/admin" class="button">Back to Admin Panels</a>      
 </body>
 </html>
 

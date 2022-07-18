@@ -1,6 +1,7 @@
 <%- include('../templates/head') %>
 
 <body>
+        <%- include('../templates/logBar') %>
         <h1>Cart</h1>
         <a href="/" class="button">Back to Home</a>
 
@@ -20,7 +21,7 @@
       $('body').on('click', '.cartRemoveButton', (e) => {
           let idToRemove = e.currentTarget.childNodes[1].innerHTML;
 
-          fetch(`/api/cart/products/${idToRemove}`, {
+          fetch(`/cart/products/${idToRemove}`, {
             method: 'delete',
             headers: { 'Content-Type' : 'application/json' },
             cache: 'no-cache'

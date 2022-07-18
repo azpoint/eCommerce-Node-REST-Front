@@ -15,11 +15,16 @@ const productsMongo = new ProductsMongo(db, productModel)
 
 
 cartRouter.get('', (req, res) => {
-    res.redirect('api/cart/products')
+    res.redirect('cart/products')
 })
 
 cartRouter.get('/products', (req, res) => {
     let cartAmount = 0;
+    let logName = '';
+
+    if (req.session.logName) {
+        logName = req.session.logName
+    }
 
     return cart.getAllCart()
     .then( resp => {
@@ -44,7 +49,7 @@ cartRouter.get('/products', (req, res) => {
                 cartAmount += item.price *item.qty
             })
             cartAmount.toFixed(2)
-            res.render('cartList', { cartListRender, cartAmount })
+            res.render('cartList', { cartListRender, cartAmount, logName })
         })()
         
     })

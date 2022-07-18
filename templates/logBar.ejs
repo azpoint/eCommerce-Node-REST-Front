@@ -1,0 +1,10 @@
+<div class="logBar">
+    <h1>Welcome <%- logName %></h1>
+
+    <% if (logName) { %>
+        <button class="logOutButton" onclick="window.location.href='/logout'">Logout</button>
+
+    <% } else if (!logName) { %>
+        <button class="logButton" onclick="window.location.href='/login'">Login</button>
+    <% } %>
+</div>

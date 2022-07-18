@@ -1,9 +1,12 @@
-<%- include('../templates/head') %> 
+<%- include('../templates/head') %>
+
 
 <body>
+  <%- include('../templates/logBar') %>
+
   <h1 class="actualForm">Find a product since you can't find yourself...</h1>
 
-  <a href="/api/cart/products" class="button">Go to Cart</a>
+  <a href="/cart/products" class="button">Go to Cart</a>
 
     <div class="productList">
         <%- include('../templates/miniCard', { productList }) %>
@@ -25,7 +28,7 @@
     </div>
   </div>
 
-  <a href="/api/admin" class="button">Admin Panel</a>
+  <a href="/admin" class="button">Admin Panel</a>
 
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.js" integrity="sha512-9mpsATI0KClwt+xVZfbcf2lJ8IFBAwsubJ6mI3rtULwyM3fBmQFzj0It4tGqxLOGQwGfJdk/G+fANnxfq9/cew==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
