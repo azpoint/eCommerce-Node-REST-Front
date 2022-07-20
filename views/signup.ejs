@@ -1,0 +1,17 @@
+<%- include('../templates/head') %>
+
+<body>
+    <div class="centralForm">
+        <h1>Sign up!</h1>
+        <form action="/signup" method="POST" class="actualForm">
+            <label for="logName">e-mail/username: </label>
+            <input type="email" id="logName" name="username">
+            <label for="logPass">Password: </label>
+            <input type="password" id="logPass" name="password">
+            <label for="adminCheck">Is admin?</label>
+            <input type="checkbox" id="adminCheck" name="isAdmin">
+            <button type="submit">Sign me up!</button>
+        </form>
+    </div>
+</body>
+</html>

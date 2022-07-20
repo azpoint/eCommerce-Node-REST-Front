@@ -1,6 +1,8 @@
 const express = require('express');
 const { Router } = express;
 const session = require('express-session');
+const passport = require('passport');
+const { Strategy: LocalStrategy } = require('passport-local');
 const cookieParser = require('cookie-parser');
 
 const mainRouter = Router();
@@ -8,6 +10,7 @@ const mainRouter = Router();
 
 const db = require('../db/mongo/db')
 const productModel = require('../db/mongo/models/productsModel');
+const userModel = require('../db/mongo/models/userModel')
 const MongoStore = require('connect-mongo');
 
 //--------Middlewares --------
@@ -21,12 +24,32 @@ mainRouter.use(session({
 })
 )
 
+mainRouter.use(passport.initialize());
+mainRouter.use(passport.session());
+
 mainRouter.use(cookieParser('parserDude'))
+
+
+
+// -------- PASSPORT --------
+
+passport.use('signup', new LocalStrategy({ passReqToCallback: true }, (req, username, password, done) => {
+    return userModel.findOne({ username })
+        .then( user => {
+            if(user) {
+                return done(null, false, { message: 'User already exist' })
+            }
+
+            const newUser = new User()
+            newUser.username = username
+            newUser.password = createHash(password)
+            newUser.email = req.body.email
+        })
+}))
 
 //------- ROUTER --------
 
 mainRouter.get('/', (req, res) => {
-    console.log(req.session)
     
     db.then( _ => productModel.find())
     .then( resp => {
@@ -48,6 +71,15 @@ mainRouter.get('/login', (req, res) => {
 mainRouter.post('/login', (req, res) => {
     req.session.logName = req.body.name;
     res.redirect('/');
+})
+
+mainRouter.get('/signup', (req, res) => {
+    res.render('signup')
+})
+
+mainRouter.post('/signup', (req, res, next) => {
+    console.log(req.body)
+    next()
 })
 
 mainRouter.get('/logout', (req, res) => {
