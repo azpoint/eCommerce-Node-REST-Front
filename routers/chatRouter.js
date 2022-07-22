@@ -9,7 +9,7 @@ chatRouter.get('/chatAdmin', (req, res) => {
     let logName = ''
     
     if (req.session.logName) {
-        logName = req.session.logName
+        logName = req.session.alias
     }
     
     res.render("adminChat", { logName });  

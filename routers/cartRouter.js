@@ -23,7 +23,7 @@ cartRouter.get('/products', (req, res) => {
     let logName = '';
 
     if (req.session.logName) {
-        logName = req.session.logName
+        logName = req.session.alias
     }
 
     return cart.getAllCart()

@@ -17,7 +17,7 @@ adminRouter.get('', (req, res) => {
     let logName = ''
 
         if (req.session.logName) {
-            logName = req.session.logName;            
+            logName = req.session.alias;            
         }
         res.render('adminPanels', { logName });
 })

@@ -1,13 +1,18 @@
 <%- include('../templates/head') %>
 
 <body>
+    <a href="/" class="button">Back to Home</a>
+
     <div class="centralForm">
         <h1>Sign up!</h1>
+        <h2 style="color: red;"><%- message %></h2>
         <form action="/signup" method="POST" class="actualForm">
-            <label for="logName">e-mail/username: </label>
-            <input type="email" id="logName" name="username">
+            <label for="logName">e-mail: </label>
+            <input type="email" id="logName" name="username" required autofocus>
             <label for="logPass">Password: </label>
-            <input type="password" id="logPass" name="password">
+            <input type="password" id="logPass" name="password" required>
+            <label for="alias">Alias: </label>
+            <input type="text" id="alias" name="alias" required>
             <label for="adminCheck">Is admin?</label>
             <input type="checkbox" id="adminCheck" name="isAdmin">
             <button type="submit">Sign me up!</button>
