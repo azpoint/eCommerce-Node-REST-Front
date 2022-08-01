@@ -40,18 +40,18 @@ mainRouter.use(passport.session());
 passport.use('login', new LocalStrategy({ passReqToCallback: true }, (req, username, password, done) => {
 
     return dbUser.findOne({ username })
-        .then(userDb => {
+        .then(user => {
             if(!user) {
                 return done(null, false, { message: 'Wrong or inexistent user' })
             }
 
-            if(!passwordValidation(userDb.password, password)) {
+            if(!passwordValidation(user.password, password)) {
                 return done(null, false, { message: 'Wrong password' })
             }
 
-            req.session.alias = userDb.alias;
+            req.session.alias = user.alias;
 
-            console.log(userDb)
+            console.log(req.session)
             
             return done(null, user)
         })
@@ -59,6 +59,7 @@ passport.use('login', new LocalStrategy({ passReqToCallback: true }, (req, usern
 }))
 
 passport.use('signup', new LocalStrategy({ passReqToCallback: true }, (req, username, password, done) => {
+
     return dbUser.findOne({ username })
         .then( userDb => {
             if(userDb) {
@@ -79,6 +80,7 @@ passport.use('signup', new LocalStrategy({ passReqToCallback: true }, (req, user
 
             return newDbUser.save()
                 .then(user => {
+                    console.log('Signup Done')
                     return done(null, user)
                 })
                 .catch(err => done(err))
@@ -92,10 +94,9 @@ passport.serializeUser((user, done) => {
 })
 
 passport.deserializeUser((id, done) => {
+    console.log('De-serialize User');
     dbUser.findById(id)
         .then(user => {
-        console.log('De-serialize User');
-
             done(null, user)
         })
 })
@@ -103,6 +104,7 @@ passport.deserializeUser((id, done) => {
 //------- ROUTER --------
 
 mainRouter.get('/', (req, res) => {
+    console.log(req.session)
     
     db.then( _ => productModel.find())
     .then( resp => {
