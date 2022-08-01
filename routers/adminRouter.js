@@ -10,7 +10,13 @@ const adminRouter = Router();
 const productsMongo = new ProductsMongo(db, productModel)
 
 //------- ROUTER -------
+adminRouter.use((req, res, next) => {
+    if(req.user && req.user.admin) {
+        return next()
+    }
 
+    return res.render('error', { message: 'Necesitas ser Administrador'})
+})
 
 adminRouter.get('', (req, res) => {
 
@@ -19,7 +25,7 @@ adminRouter.get('', (req, res) => {
         if (req.session.logName) {
             logName = req.session.alias;            
         }
-        res.render('adminPanels', { logName });
+        return res.render('adminPanels', { logName });
 })
 
 
@@ -33,19 +39,20 @@ adminRouter.get('/products', (req, res) => {
         
         return productsMongo.getAll()
         .then(productList => {
-            res.render('adminProducts', { productList })
+            return res.render('adminProducts', { productList })
         })
-    } else {
-        return productsMongo.getById(req.query.idString)
-        .then( resp => {
-            if(resp == []) {
-                let message = 'This product does not exist'
-                res.render('error', { message })
-            }
-            let productList = resp
-            res.render('adminProducts', { productList, logName })
-        })
-    }
+    } 
+
+    return productsMongo.getById(req.query.idString)
+    .then( resp => {
+        if(resp == []) {
+            let message = 'This product does not exist'
+            res.render('error', { message })
+        }
+        let productList = resp
+        return res.render('adminProducts', { productList, logName })
+    })
+
 })
 
 adminRouter.post('/products', (req, res, next) => {
@@ -60,19 +67,19 @@ adminRouter.post('/products', (req, res, next) => {
     .then( resp => {
         let productList = [];
         productList.push(resp)
-        res.render('adminResponse', { productList, message: 'Product added successfully'})
+        return res.render('adminResponse', { productList, message: 'Product added successfully'})
     }).catch( resp => {
         let message = resp.message;
-        res.render('error', {message})
+        return res.render('error', {message})
     })
 })
 
 adminRouter.post('/products/delete', (req, res) => {
     return productsMongo.deleteById(req.body.id)
     .then( _ => {
-        res.render('adminDeleteResponse', { message: 'Product Deleted'}) 
+        return res.render('adminDeleteResponse', { message: 'Product Deleted'}) 
     }).catch( err => {
-        res.render('error', { message: 'The product you inserted does not exist' })
+        return res.render('error', { message: 'The product you inserted does not exist' })
     })
 })
 
@@ -91,13 +98,13 @@ adminRouter.post('/products/put', (req, res) => {
             return productsMongo.getById(req.body.id)
             .then( resp => {
                 let productList = resp;
-                res.render('adminResponse', { productList, message: 'Product Updated'})
+                return res.render('adminResponse', { productList, message: 'Product Updated'})
 
             })
         }
     })
     .catch( resp => {
-        res.render('error', { message: `This product does not exist: \n${resp.message}`})
+        return res.render('error', { message: `This product does not exist: \n${resp.message}`})
     })
 })
 

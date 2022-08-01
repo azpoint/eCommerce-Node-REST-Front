@@ -1,4 +1,8 @@
+
 //-------- Dependencies --------
+const dotenv = require('dotenv').config();
+const envConfig = require('./envConfig');
+
 const express = require('express');
 const { Server: IOServer } = require('socket.io');
 const { Server: HttpServer } = require('http');
@@ -10,6 +14,7 @@ const mainRouter = require('./routers/mainRouter.js');
 const chatRouter = require('./routers/chatRouter.js');
 const cartRouter = require('./routers/cartRouter.js');
 const adminRouter = require('./routers/adminRouter.js');
+const randomRouter = require('./routers/randomRouter.js');
 
 // const { initSetup } = require('./db/setup/dbSetup.js');
 // const knex = require('knex')( initSetup );
@@ -22,7 +27,7 @@ const app = express();
 const httpServer = new HttpServer(app);
 const io = new IOServer(httpServer);
 
-const PORT = 8080;
+const PORT = envConfig.port;
 
 //-------- Template Generator --------
 
@@ -38,6 +43,7 @@ app.use('/', mainRouter);
 app.use('/chat', chatRouter);
 app.use('/cart', cartRouter);
 app.use('/admin', adminRouter);
+app.use('/random', randomRouter);
 app.use(express.static('./public'));
 
 

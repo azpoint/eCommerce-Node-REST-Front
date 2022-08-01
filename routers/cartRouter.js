@@ -15,7 +15,7 @@ const productsMongo = new ProductsMongo(db, productModel)
 
 
 cartRouter.get('', (req, res) => {
-    res.redirect('cart/products')
+   return res.redirect('cart/products')
 })
 
 cartRouter.get('/products', (req, res) => {
@@ -48,7 +48,9 @@ cartRouter.get('/products', (req, res) => {
             cartListRender.forEach( item => {
                 cartAmount += item.price *item.qty
             })
+
             cartAmount.toFixed(2)
+            
             res.render('cartList', { cartListRender, cartAmount, logName })
         })()
         

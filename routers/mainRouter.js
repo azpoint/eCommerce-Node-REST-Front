@@ -5,7 +5,7 @@ const passport = require('passport');
 const { Strategy: LocalStrategy } = require('passport-local');
 const { createHash, passwordValidation } = require('../misc/cryptoHash');
 const flash = require('connect-flash');
-// const cookieParser = require('cookie-parser');
+const envConfig = require('../envConfig');
 
 const mainRouter = Router();
 // -------- DB --------
@@ -18,7 +18,7 @@ const MongoStore = require('connect-mongo');
 //--------Middlewares --------
 
 mainRouter.use(session({
-    store: MongoStore.create({mongoUrl: 'mongodb+srv://AZL:C1RIIU6ywWLWBCMO@cluster0.wtqnueb.mongodb.net/mongo-sessions?retryWrites=true&w=majority'}),
+    store: MongoStore.create({mongoUrl: `mongodb+srv://AZL:${envConfig.mongo_pass}@cluster0.wtqnueb.mongodb.net/mongo-sessions?retryWrites=true&w=majority`}),
     secret: 'claveDude',
     resave: true,
     saveUninitialized: true,
@@ -30,9 +30,6 @@ mainRouter.use(flash());
 
 mainRouter.use(passport.initialize());
 mainRouter.use(passport.session());
-
-// mainRouter.use(cookieParser('parserDude'))
-
 
 
 // -------- PASSPORT --------
@@ -48,10 +45,6 @@ passport.use('login', new LocalStrategy({ passReqToCallback: true }, (req, usern
             if(!passwordValidation(user.password, password)) {
                 return done(null, false, { message: 'Wrong password' })
             }
-
-            req.session.alias = user.alias;
-
-            console.log(req.session)
             
             return done(null, user)
         })
@@ -104,22 +97,23 @@ passport.deserializeUser((id, done) => {
 //------- ROUTER --------
 
 mainRouter.get('/', (req, res) => {
-    console.log(req.session)
-    
+    console.log(req.user)
+
     db.then( _ => productModel.find())
     .then( resp => {
         let productList = resp
         let logName = ''
 
-        if (req.session.alias) {
-            logName = req.session.alias;
+        if (req.user && req.user.alias) {
+            logName = req.user.alias;
         }
 
-        res.render('index', { productList, logName });
+       return res.render('index', { productList, logName });
     })
 })
 
 mainRouter.get('/login', (req, res) => {
+    console.log(req.flash('error'))
     return res.render('login', { message: req.flash('error') })
 })
 
@@ -146,7 +140,20 @@ mainRouter.get('/logout', (req, res) => {
             res.render('error', { message: err.message })
         }
     })
-    res.redirect('/');
+    return res.redirect('/');
+})
+
+
+mainRouter.get('/info', (req, res) => {
+   return  res.json({
+        envArgs: envConfig,
+        OS: process.platform,
+        NodeVersion: process.version,
+        ReservedMemory: process.memoryUsage().rss,
+        ExecPath: process.execPath,
+        Process_id: process.pid,
+        Working_dir: process.cwd()
+    })
 })
 
 module.exports = mainRouter

@@ -12,7 +12,7 @@ chatRouter.get('/chatAdmin', (req, res) => {
         logName = req.session.alias
     }
     
-    res.render("adminChat", { logName });  
+    return res.render("adminChat", { logName });  
 })
 
 module.exports = chatRouter
