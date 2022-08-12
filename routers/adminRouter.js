@@ -18,14 +18,14 @@ adminRouter.use((req, res, next) => {
     return res.render('error', { message: 'Necesitas ser Administrador'})
 })
 
-adminRouter.get('', (req, res) => {
+adminRouter.get('/', (req, res) => {
 
     let logName = ''
 
-        if (req.session.logName) {
-            logName = req.session.alias;            
-        }
-        return res.render('adminPanels', { logName });
+    if (req.user && req.user.alias) {
+        logName = req.user.alias;
+    }
+    return res.render('adminPanels', { logName });
 })
 
 

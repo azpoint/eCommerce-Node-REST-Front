@@ -2,6 +2,7 @@
 //-------- Dependencies --------
 const dotenv = require('dotenv').config();
 const envConfig = require('./envConfig');
+const argv = require('./argsConfig');
 
 const express = require('express');
 const { Server: IOServer } = require('socket.io');
@@ -27,7 +28,7 @@ const app = express();
 const httpServer = new HttpServer(app);
 const io = new IOServer(httpServer);
 
-const PORT = envConfig.port;
+const PORT = argv.port;
 
 //-------- Template Generator --------
 
