@@ -5,6 +5,7 @@ const envConfig = require('./envConfig');
 const argv = require('./argsConfig');
 
 const express = require('express');
+const compression = require('compression')
 const { Server: IOServer } = require('socket.io');
 const { Server: HttpServer } = require('http');
 const fs = require('fs');
@@ -36,6 +37,8 @@ app.set('view engine', 'ejs');
 app.set('views', './views');
 
 //------- Middlewares ---------
+
+app.use(compression())
 
 app.use(express.json());
 app.use(express.urlencoded( { extended: true }));
