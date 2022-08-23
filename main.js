@@ -29,7 +29,9 @@ const app = express();
 const httpServer = new HttpServer(app);
 const io = new IOServer(httpServer);
 
-const PORT = argv.port;
+const PORT = envConfig.port;
+
+console.log(PORT)
 
 //-------- Template Generator --------
 
@@ -38,7 +40,7 @@ app.set('views', './views');
 
 //------- Middlewares ---------
 
-app.use(compression())
+app.use(compression());
 
 app.use(express.json());
 app.use(express.urlencoded( { extended: true }));

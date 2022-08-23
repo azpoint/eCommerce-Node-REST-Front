@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "node main.js"
+},
   "dependencies": {
     "bcrypt": "^5.0.1",
     "compression": "^1.7.4",
