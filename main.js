@@ -58,7 +58,7 @@ app.use(express.static('./public'));
 //Error handler in the application! (no adddres required so it can cath any error)
 
 // app.use((err, req, res, next) => {
-//     return res.render('error');
+//     return res.render('error', {message: err.message});
 // })
 
 

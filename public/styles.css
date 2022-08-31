@@ -131,6 +131,10 @@ button:hover {
     margin: 0 2rem;
 }
 
+.logBar img {
+    width: 100px;
+}
+
 .logButton {
     background-color: rgb(76, 206, 93);
     border-radius: 0.2rem;
@@ -233,10 +237,10 @@ button:hover {
     color: dimgray;
 }
 
-.cartRemoveButton {
+.cartAddButton {
     background-color: rgb(141, 111, 167);
 }
 
-.cartRemoveButton span {
+.cartAddButton span {
     display: none;
 }

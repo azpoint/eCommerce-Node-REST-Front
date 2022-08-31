@@ -6,7 +6,7 @@
     <div class="centralForm">
         <h1>Sign up!</h1>
         <h2 style="color: red;"><%- message %></h2>
-        <form action="/signup" method="POST" class="actualForm">
+        <form action="/signup" method="POST" class="actualForm" enctype="multipart/form-data">
             <label for="logName">e-mail: </label>
             <input type="email" id="logName" name="username" required autofocus>
             <label for="logPass">Password: </label>
@@ -15,6 +15,8 @@
             <input type="text" id="alias" name="alias" required>
             <label for="adminCheck">Is admin?</label>
             <input type="checkbox" id="adminCheck" name="isAdmin">
+            <label for="upFile">Select Image:</label>
+            <input type="file" name="avatar-image" id="upFile">
             <button type="submit">Sign me up!</button>
         </form>
     </div>

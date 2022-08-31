@@ -7,10 +7,11 @@ const ProductsMongo = require('../operative/productHandlerMongo')
 const db = require('../db/mongo/db')
 const cartModel = require('../db/mongo/models/cartModel')
 const productModel = require('../db/mongo/models/productsModel')
+const userModel = require('../db/mongo/models/userModel')
 
 const cartRouter = Router();
 
-const cart = new CartModel(db, cartModel)
+const cart = new CartModel(db, userModel)
 const productsMongo = new ProductsMongo(db, productModel)
 
 
@@ -21,13 +22,21 @@ cartRouter.get('', (req, res) => {
 cartRouter.get('/products', (req, res) => {
     let cartAmount = 0;
     let logName = '';
+    let avatarDir = ''
 
-    if (req.session.logName) {
-        logName = req.session.alias
+    if (req.user && req.user.alias) {
+        logName = req.user.alias
+        avatarDir = req.user.avatar
     }
 
-    return cart.getAllCart()
+    if(!req.user) {
+        return res.render('error', { message: "You should be logged before adding stuff"})
+    }
+
+
+    return cart.getAllCart(req.user._id)
     .then( resp => {
+        console.log(resp)
         let cartListRender = [];
         let cartList = [];
 
@@ -51,7 +60,7 @@ cartRouter.get('/products', (req, res) => {
 
             cartAmount.toFixed(2)
             
-            res.render('cartList', { cartListRender, cartAmount, logName })
+            res.render('cartList', { cartListRender, cartAmount, logName, avatarDir })
         })()
         
     })
@@ -59,26 +68,40 @@ cartRouter.get('/products', (req, res) => {
 
 
 
-cartRouter.post('/products/:id', (req, res) => {    
+cartRouter.post('/products/:id', (req, res) => {
+    let userId = req.user._id
     let idp = {
         product_Id: req.params.id,
         qty: 1
     }
 
-    return cart.itemCheck(req.params.id)
-    .then( resp => {
-        let itemCheck = resp;
+    if(!req.user){ return null }
 
-        if(itemCheck === 0) {
-            return cart.addProduct(idp)
-        } else {
-            return cart.addQty(req.params.id)
-        }
-    })
+    // return cart.addProduct(userId, idp)
+
+    return cart.itemCheck(userId, req.params.id)
+        .then( resp => { 
+            if(resp === undefined) {
+                return cart.addProduct(userId, idp)
+            } else {
+
+            }
+        })
+
+    // return cart.itemCheck(req.params.id)
+    // .then( resp => {
+    //     let itemCheck = resp;
+
+    //     if(itemCheck === 0) {
+    //         return cart.addProduct(id, idp)
+    //     } else {
+    //         return cart.addQty(req.params.id)
+    //     }
+    // })
 })
 
 cartRouter.delete('/products/:id', (req, res) => {
-    return cart.deleteById(req.params.id)
+    return cart.deleteById(req.user._id, req.params.id)
     .then( resp => {
         console.log( resp)
     })

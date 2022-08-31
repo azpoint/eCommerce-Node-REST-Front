@@ -6,6 +6,9 @@ const { Strategy: LocalStrategy } = require('passport-local');
 const { createHash, passwordValidation } = require('../misc/cryptoHash');
 const flash = require('connect-flash');
 const envConfig = require('../envConfig');
+const upload = require('../misc/uploadMiddleware')
+const {v4: uuidv4 } = require('uuid')
+const sharp = require('sharp')
 
 const mainRouter = Router();
 // -------- DB --------
@@ -53,17 +56,36 @@ passport.use('login', new LocalStrategy({ passReqToCallback: true }, (req, usern
 
 passport.use('signup', new LocalStrategy({ passReqToCallback: true }, (req, username, password, done) => {
 
+    if(!req.file){
+        return done(null, false, {message: 'Please upload a picture'})
+    }
+
+    function getFileExtension(mimeType){
+        if ( mimeType=== 'image/png') {
+            return '.png';
+        }
+        else if ( mimeType=== 'image/jpg') {
+            return '.jpg';
+        }
+        else {
+            return '.jpeg';
+        }
+        }
+
     return dbUser.findOne({ username })
         .then( userDb => {
             if(userDb) {
                 return done(null, false, { message: 'User already exist, try another one' })
             }
-
+            const avatarName = uuidv4()
             const newDbUser = new dbUser()
+
+            sharp(req.file.buffer).resize(300,300).toFile(`./public/avatars/${avatarName}${getFileExtension(req.file.mimetype)}`, err => console.log(err))
             
             newDbUser.username = username
             newDbUser.password = createHash(password)
             newDbUser.alias = req.body.alias
+            newDbUser.avatar = `${avatarName}${getFileExtension(req.file.mimetype)}`
 
             if(req.body.isAdmin === 'on') {
                 newDbUser.admin  = true
@@ -103,12 +125,14 @@ mainRouter.get('/', (req, res) => {
     .then( resp => {
         let productList = resp
         let logName = ''
+        let avatarDir = ''
 
         if (req.user && req.user.alias) {
             logName = req.user.alias;
+            avatarDir = req.user.avatar;
         }
 
-       return res.render('index', { productList, logName });
+       return res.render('index', { productList, logName, avatarDir });
     })
 })
 
@@ -127,7 +151,7 @@ mainRouter.get('/signup', (req, res) => {
     return res.render('signup', { message: req.flash('error') })
 })
 
-mainRouter.post('/signup', passport.authenticate('signup', {
+mainRouter.post('/signup', upload.single('avatar-image') , passport.authenticate('signup', {
     successRedirect: '/',
     failureRedirect: '/signup',
     failureFlash: true

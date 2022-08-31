@@ -4,8 +4,8 @@ class CartModel {
         this.model = model
     }
 
-    addProduct(productToAdd) {
-        return this.db.then( _ => this.model.create(productToAdd))
+    addProduct(userId, productToAdd) {
+        return this.db.then( _ => this.model.findOneAndUpdate({ _id: userId }, { $push: { cart: productToAdd }}))
         .then( resp => { return resp})
     }
 
@@ -14,20 +14,22 @@ class CartModel {
         .then( resp => { return resp })
     }
 
-    itemCheck(id) {
-        return this.db.then( _ => this.model.where({ product_Id: id}).count())
-        .then( resp => { return resp })
-    }
-
-    getAllCart() {
-        return this.db.then( _ => this.model.find())
+    itemCheck(userId, productId) {
+        return this.db.then( _ => this.model.findOne({ _id: userId}))
         .then( resp => {
-            return resp
+           return resp.cart.find(element => { return element.product_Id === productId})
         })
     }
 
-    deleteById(id) {
-        return this.db.then( _ => this.model.deleteOne({ product_Id: id}))
+    getAllCart(userId) {
+        return this.db.then( _ => this.model.findOne({ _id: userId}))
+        .then( resp => {
+            return resp.cart
+        })
+    }
+
+    deleteById(userId, id) {
+        return this.db.then( _ => this.model.find({ _id: userId }))
         .then(resp => { return resp })
     }
 }

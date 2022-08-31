@@ -1,6 +1,10 @@
 <div class="logBar">
     <h1>Welcome <%- logName %></h1>
 
+    <% if (avatarDir) { %>
+    <img src=<%- `/avatars/${avatarDir}` %>>
+    <% } %>
+    
     <% if (logName) { %>
         <button class="logOutButton" onclick="window.location.href='/logout'">Logout</button>
 
