@@ -1,183 +1,211 @@
-const express = require('express');
+const express = require("express");
 const { Router } = express;
-const session = require('express-session');
-const passport = require('passport');
-const { Strategy: LocalStrategy } = require('passport-local');
-const { createHash, passwordValidation } = require('../misc/cryptoHash');
-const flash = require('connect-flash');
-const envConfig = require('../envConfig');
-const upload = require('../misc/uploadMiddleware')
-const {v4: uuidv4 } = require('uuid')
-const sharp = require('sharp')
+const session = require("express-session");
+const passport = require("passport");
+const { Strategy: LocalStrategy } = require("passport-local");
+const { createHash, passwordValidation } = require("../misc/cryptoHash");
+const flash = require("connect-flash");
+const envConfig = require("../envConfig");
+const upload = require("../misc/uploadMiddleware");
+const { v4: uuidv4 } = require("uuid");
+const sharp = require("sharp");
 
 const mainRouter = Router();
 // -------- DB --------
 
-const db = require('../db/mongo/db')
-const productModel = require('../db/mongo/models/productsModel');
-const dbUser = require('../db/mongo/models/userModel');
-const MongoStore = require('connect-mongo');
+const db = require("../db/mongo/db");
+const productModel = require("../db/mongo/models/productsModel");
+const dbUser = require("../db/mongo/models/userModel");
+const MongoStore = require("connect-mongo");
 
 //--------Middlewares --------
 
-mainRouter.use(session({
-    store: MongoStore.create({mongoUrl: `mongodb+srv://AZL:${envConfig.mongo_pass}@cluster0.wtqnueb.mongodb.net/mongo-sessions?retryWrites=true&w=majority`}),
-    secret: 'claveDude',
+mainRouter.use(
+  session({
+    store: MongoStore.create({
+      mongoUrl: `mongodb+srv://AZL:${envConfig.mongo_pass}@cluster0.wtqnueb.mongodb.net/mongo-sessions?retryWrites=true&w=majority`,
+    }),
+    secret: "claveDude",
     resave: true,
     saveUninitialized: true,
-    cookie: { maxAge: 600000 }
-})
-)
+    cookie: { maxAge: 600000 },
+  })
+);
 
 mainRouter.use(flash());
 
 mainRouter.use(passport.initialize());
 mainRouter.use(passport.session());
 
-
 // -------- PASSPORT --------
 
-passport.use('login', new LocalStrategy({ passReqToCallback: true }, (req, username, password, done) => {
+passport.use(
+  "login",
+  new LocalStrategy(
+    { passReqToCallback: true },
+    (req, username, password, done) => {
+      return dbUser
+        .findOne({ username })
+        .then((user) => {
+          if (!user) {
+            return done(null, false, { message: "Wrong or inexistent user" });
+          }
 
-    return dbUser.findOne({ username })
-        .then(user => {
-            if(!user) {
-                return done(null, false, { message: 'Wrong or inexistent user' })
-            }
+          if (!passwordValidation(user.password, password)) {
+            return done(null, false, { message: "Wrong password" });
+          }
 
-            if(!passwordValidation(user.password, password)) {
-                return done(null, false, { message: 'Wrong password' })
-            }
-            
-            return done(null, user)
+          return done(null, user);
         })
-        .catch(err => done(err))
-}))
-
-passport.use('signup', new LocalStrategy({ passReqToCallback: true }, (req, username, password, done) => {
-
-    if(!req.file){
-        return done(null, false, {message: 'Please upload a picture'})
+        .catch((err) => done(err));
     }
+  )
+);
 
-    function getFileExtension(mimeType){
-        if ( mimeType=== 'image/png') {
-            return '.png';
+passport.use(
+  "signup",
+  new LocalStrategy(
+    { passReqToCallback: true },
+    (req, username, password, done) => {
+      console.log(req.body);
+
+      if (!req.file) {
+        return done(null, false, { message: "Please upload a picture" });
+      }
+
+      function getFileExtension(mimeType) {
+        if (mimeType === "image/png") {
+          return ".png";
+        } else if (mimeType === "image/jpg") {
+          return ".jpg";
+        } else {
+          return ".jpeg";
         }
-        else if ( mimeType=== 'image/jpg') {
-            return '.jpg';
+      }
+
+      return dbUser.findOne({ username }).then((userDb) => {
+        if (userDb) {
+          return done(null, false, {
+            message: "User already exist, try another one",
+          });
         }
-        else {
-            return '.jpeg';
+        const avatarName = uuidv4();
+        const newDbUser = new dbUser();
+
+        sharp(req.file.buffer)
+          .resize(300, 300)
+          .toFile(
+            `./public/avatars/${avatarName}${getFileExtension(
+              req.file.mimetype
+            )}`,
+            (err) => console.log(err)
+          );
+
+        newDbUser.username = username;
+        newDbUser.password = createHash(password);
+        newDbUser.alias = req.body.alias;
+        newDbUser.avatar = `${avatarName}${getFileExtension(
+          req.file.mimetype
+        )}`;
+        newDbUser.phone = req.body.countryCode + req.body.phoneNumber;
+        newDbUser.address = req.body.address;
+
+        if (req.body.isAdmin === "on") {
+          newDbUser.admin = true;
+        } else {
+          newDbUser.admin = false;
         }
-        }
 
-    return dbUser.findOne({ username })
-        .then( userDb => {
-            if(userDb) {
-                return done(null, false, { message: 'User already exist, try another one' })
-            }
-            const avatarName = uuidv4()
-            const newDbUser = new dbUser()
-
-            sharp(req.file.buffer).resize(300,300).toFile(`./public/avatars/${avatarName}${getFileExtension(req.file.mimetype)}`, err => console.log(err))
-            
-            newDbUser.username = username
-            newDbUser.password = createHash(password)
-            newDbUser.alias = req.body.alias
-            newDbUser.avatar = `${avatarName}${getFileExtension(req.file.mimetype)}`
-
-            if(req.body.isAdmin === 'on') {
-                newDbUser.admin  = true
-            } else {
-                newDbUser.admin = false
-            }
-
-            return newDbUser.save()
-                .then(user => {
-                    console.log('Signup Done')
-                    return done(null, user)
-                })
-                .catch(err => done(err))
-        })
-}))
-
+        return newDbUser
+          .save()
+          .then((user) => {
+            console.log("Signup Done");
+            return done(null, user);
+          })
+          .catch((err) => done(err));
+      });
+    }
+  )
+);
 
 passport.serializeUser((user, done) => {
-    console.log('Serialize User');
-    done(null, user._id)
-})
+  console.log("Serialize User");
+  done(null, user._id);
+});
 
 passport.deserializeUser((id, done) => {
-    console.log('De-serialize User');
-    dbUser.findById(id)
-        .then(user => {
-            done(null, user)
-        })
-})
+  console.log("De-serialize User");
+  dbUser.findById(id).then((user) => {
+    done(null, user);
+  });
+});
 
 //------- ROUTER --------
 
-mainRouter.get('/', (req, res) => {
-    console.log(req.user)
+mainRouter.get("/", (req, res) => {
+  console.log(req.user);
 
-    db.then( _ => productModel.find())
-    .then( resp => {
-        let productList = resp
-        let logName = ''
-        let avatarDir = ''
+  db.then((_) => productModel.find()).then((resp) => {
+    let productList = resp;
+    let logName = "";
+    let avatarDir = "";
 
-        if (req.user && req.user.alias) {
-            logName = req.user.alias;
-            avatarDir = req.user.avatar;
-        }
+    if (req.user && req.user.alias) {
+      logName = req.user.alias;
+      avatarDir = req.user.avatar;
+    }
 
-       return res.render('index', { productList, logName, avatarDir });
-    })
-})
+    return res.render("index", { productList, logName, avatarDir });
+  });
+});
 
-mainRouter.get('/login', (req, res) => {
-    console.log(req.flash('error'))
-    return res.render('login', { message: req.flash('error') })
-})
+mainRouter.get("/login", (req, res) => {
+  console.log(req.flash("error"));
+  return res.render("login", { message: req.flash("error") });
+});
 
-mainRouter.post('/login', passport.authenticate('login', {
-    successRedirect: '/',
-    failureRedirect: '/login',
-    failureFlash: true
-}))
+mainRouter.post(
+  "/login",
+  passport.authenticate("login", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+    failureFlash: true,
+  })
+);
 
-mainRouter.get('/signup', (req, res) => {
-    return res.render('signup', { message: req.flash('error') })
-})
+mainRouter.get("/signup", (req, res) => {
+  return res.render("signup", { message: req.flash("error") });
+});
 
-mainRouter.post('/signup', upload.single('avatar-image') , passport.authenticate('signup', {
-    successRedirect: '/',
-    failureRedirect: '/signup',
-    failureFlash: true
-}))
+mainRouter.post(
+  "/signup",
+  upload.single("avatar-image"),
+  passport.authenticate("signup", {
+    successRedirect: "/",
+    failureRedirect: "/signup",
+    failureFlash: true,
+  })
+);
 
-mainRouter.get('/logout', (req, res) => {
+mainRouter.get("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      res.render("error", { message: err.message });
+    }
+  });
+  return res.redirect("/");
+});
 
-    req.session.destroy( err => {
-        if(err) {
-            res.render('error', { message: err.message })
-        }
-    })
-    return res.redirect('/');
-})
+mainRouter.get("/info", (req, res) => {
+  return res.json({
+    envArgs: envConfig,
+    OS: process.platform,
+    NodeVersion: process.version,
+    ReservedMemory: process.memoryUsage().rss,
+    ExecPath: process.execPath,
+    Process_id: process.pid,
+    Working_dir: process.cwd(),
+  });
+});
 
-
-mainRouter.get('/info', (req, res) => {
-   return  res.json({
-        envArgs: envConfig,
-        OS: process.platform,
-        NodeVersion: process.version,
-        ReservedMemory: process.memoryUsage().rss,
-        ExecPath: process.execPath,
-        Process_id: process.pid,
-        Working_dir: process.cwd()
-    })
-})
-
-module.exports = mainRouter
+module.exports = mainRouter;

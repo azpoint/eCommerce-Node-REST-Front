@@ -13,6 +13,12 @@
             <input type="password" id="logPass" name="password" required>
             <label for="alias">Alias: </label>
             <input type="text" id="alias" name="alias" required>
+            <label for="phoneCode">Phone Code:</label>
+            <%- include('../templates/countryCodes') %>            
+            <label for="phoneNumber">Phone:</label>
+            <input type="number" name="phoneNumber" id="phoneNumber" required>
+            <label for="address">Address:</label>
+            <input type="text" name="address" id="address" required>
             <label for="adminCheck">Is admin?</label>
             <input type="checkbox" id="adminCheck" name="isAdmin">
             <label for="upFile">Select Image:</label>

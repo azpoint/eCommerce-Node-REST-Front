@@ -1,20 +1,18 @@
-const express = require('express');
+const express = require("express");
 const { Router } = express;
-
 
 const chatRouter = Router();
 
+chatRouter.get("/chatAdmin", (req, res) => {
+  let logName = "";
+  let avatarDir = "";
 
-chatRouter.get('/chatAdmin', (req, res) => {
-    let logName = ''
-    let avatarDir = ''
-    
-    if (req.user && req.user.alias) {
-        logName = req.user.alias
-        avatarDir = req.user.avatar
-    }
-    
-    return res.render("adminChat", { logName, avatarDir });  
-})
+  if (req.user && req.user.alias) {
+    logName = req.user.alias;
+    avatarDir = req.user.avatar;
+  }
 
-module.exports = chatRouter
+  return res.render("adminChat", { logName, avatarDir });
+});
+
+module.exports = chatRouter;

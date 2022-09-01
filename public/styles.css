@@ -244,3 +244,19 @@ button:hover {
 .cartAddButton span {
     display: none;
 }
+
+.totalAmount {
+    background-color: rgb(221, 221, 221);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1rem;
+    max-width: 800px;
+    margin: 2rem auto;    
+    padding: 1rem 0 2rem;
+    box-shadow: 5px 5px 10px 3px rgba(0, 0, 0, 0.3);
+    display: flex;
+}
+.buyButton {
+    font-size: 2rem;
+}
