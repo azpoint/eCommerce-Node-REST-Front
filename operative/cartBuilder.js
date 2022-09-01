@@ -29,7 +29,7 @@ class CartModel {
     }
 
     deleteById(userId, id) {
-        return this.db.then( _ => this.model.find({ _id: userId }))
+        return this.db.then( _ => this.model.find({ _id: userId}, { cart: { $elementMatch: { $eq: id }}}))
         .then(resp => { return resp })
     }
 }

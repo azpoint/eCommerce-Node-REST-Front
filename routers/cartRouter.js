@@ -36,7 +36,6 @@ cartRouter.get('/products', (req, res) => {
 
     return cart.getAllCart(req.user._id)
     .then( resp => {
-        console.log(resp)
         let cartListRender = [];
         let cartList = [];
 
