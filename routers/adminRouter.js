@@ -1,7 +1,7 @@
 const express = require("express");
 const { Router } = express;
-const ProductsMongo = require("../operative/productHandlerMongo");
 
+const ProductsMongo = require("../operative/productHandlerMongo");
 const db = require("../db/mongo/db");
 const productModel = require("../db/mongo/models/productsModel");
 
@@ -56,7 +56,7 @@ adminRouter.post("/products", (req, res, next) => {
     title: req.body.title,
     price: req.body.price,
     thumbnail: req.body.thumbnail,
-    stock: Math.floor(Math.random() * 101),
+    category: req.body.category,
   };
 
   return productsMongo
@@ -100,7 +100,10 @@ adminRouter.post("/products/put", (req, res) => {
   if (req.body.thumbnail !== "") {
     productUpdate.thumbnail = req.body.thumbnail;
   }
-
+  if (req.body.category !== "") {
+    productUpdate.category = req.body.category;
+  }
+  
   return productsMongo
     .updateProduct(req.body.id, productUpdate)
     .then((resp) => {

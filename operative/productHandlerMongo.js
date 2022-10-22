@@ -36,6 +36,12 @@ class ProductHandlerMongo {
         }))
     }
 
+    getCategory(category) {
+        return this.db.then( _ => this.model.find({'category': category }))
+        .then( resp => {
+            return resp
+        })
+    }
     
     deleteById(id) {
         return this.db.then( _ => this.model.deleteOne({ _id: id}))
