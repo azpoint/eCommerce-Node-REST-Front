@@ -106,38 +106,75 @@ cartRouter.post("/products/:id", (req, res) => {
 });
 
 cartRouter.delete("/products/:id", (req, res) => {
-  return cart.deleteById(req.user._id, req.params.id).then((resp) => {
-  });
+  return cart.deleteById(req.user._id, req.params.id).then((resp) => {});
 });
 
 cartRouter.post("/buynow/:buy", (req, res) => {
-    if(!req.user) {
-        return res.render('error', { message: 'Necesitas Loggearte para comprar'})
-    }
-    
-    const mailOptions = {
+  return cart.getAllCart(req.user._id).then((resp) => {
+    let cartList = [];
+    let cartListOrder = [];
+    let cartAmount = 0;
+    let orderPlaced = {
+      orderNumber: req.user.orders.length + 1,
+      order: resp,
+      date: new Date().toDateString(),
+      state: "placed",
+    };
+
+    resp.forEach((item) => {
+      cartList.push(item.product_Id);
+    });
+
+    return productsMongo.getMany(cartList).then(resp2 => {
+      for (let item of resp2) {
+        for (let item2 of resp) {
+          if (item._id == item2.product_Id) {
+            item.qty = item2.qty;
+          }
+        }
+      }
+
+      cartListOrder.forEach((item) => {
+        cartAmount += item.price * item.qty;
+      });
+
+      
+      const mailOptions = {
         from: TEST_MAIL,
         to: req.user.username,
         subject: `Nuevo pedido de ${req.user.alias} - ${req.user.username}`,
         html: `
-            <h1>Congrats in your new purchase! ${req.user.alias}</h1>
+              <h1>Congrats in your new purchase! ${req.user.username} - ${req.user.alias}</h1>
+  
+              <p>You purchase will arrive at the given address during your registration</p>
+  
+              <p>The order is:</p>
+                <p>Order Number: ${orderPlaced.orderNumber}</p>
+                <p>Items: <ul>${resp2.map(item => `<li>${item.title} - USD$${item.price}</li>`)}</ul></p>
+                <p>Date: ${orderPlaced.date}</p>
+                <p>State: ${orderPlaced.state}</p>
+              `,
+      };
 
-            <p>You purchase will arrive at the given address during your registration</p>
-            `,
-    };
-
-    const sendMail = async () => {
+      const sendMail = async () => {
         try {
-            const response = await transporter.sendMail(mailOptions)
-            console.log(response)
-            
+          const response = await transporter.sendMail(mailOptions);
+          console.log(response);
+          return res.render("success", {
+            message: `You will receive a confirmation email at ${req.user.username}`,
+          });
         } catch (e) {
-            console.error(e)
+          console.error(e);
         }
-    }
+      };
+  
+      sendMail();
 
-    // sendMail()
-    res.render('success', { message: `You will receive a confirmation email at ${req.user.username}`})    
+      return cart.saveOrder(req.user._id, orderPlaced);
+
+    })
+
+  });
 });
 
 module.exports = cartRouter;

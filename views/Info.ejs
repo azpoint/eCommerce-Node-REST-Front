@@ -1,0 +1,13 @@
+<%- include('../templates/head') %> 
+
+<body>
+    <div class="centralForm">
+        <h2>Server Config Info</h2>
+        <h3 class="actualForm">User Session : <%= envConf.session_max %></h3>
+        <h3 class="actualForm">OS: <%= OS %></h3>
+        <h3 class="actualForm">Node: <%= NodeVersion %></h3>
+        <h3 class="actualForm">Reserved Memory: <%= ReservedMemory %></h3>
+        <h3 class="actualForm">Process ID: <%= Process_id %></h3>
+    </div>        
+</body>
+</html>

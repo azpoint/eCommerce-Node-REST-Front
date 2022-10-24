@@ -11,6 +11,7 @@ const productsMongo = new ProductsMongo(db, productModel);
 
 //------- ROUTER -------
 adminRouter.use((req, res, next) => {
+
   if (req.user && req.user.admin) {
     return next();
   }

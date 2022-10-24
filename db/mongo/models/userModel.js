@@ -5,6 +5,7 @@ const cartSchema = new Schema({
   qty: { type: Number, required: true },
 });
 
+
 const userSchema = new Schema({
   username: { type: String, required: true, max: 20 },
   password: { type: String, required: true },
@@ -14,6 +15,7 @@ const userSchema = new Schema({
   cart: [cartSchema],
   phone: { type: String, required: true },
   address: { type: String, required: true },
+  orders: []
 });
 
 module.exports = model("user", userSchema);

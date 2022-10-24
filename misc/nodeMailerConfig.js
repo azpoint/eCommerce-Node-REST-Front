@@ -1,14 +1,14 @@
-const { createTransport } = require('nodemailer')
+const nodemailer = require('nodemailer')
 
-const TEST_MAIL = 'columbus61@ethereal.email'
-const TEST_PASSWORD = 'ysGZewUB919tYV8sHe'
+const TEST_MAIL = 'maida.goyette41@ethereal.email'
+const TEST_PASSWORD = 'U3wb7Fj85kjCmAspCH'
 
-const transporter = createTransport({
+const transporter = nodemailer.createTransport({
     host: 'smtp.ethereal.email',
     port: 587,
     auth: {
-        user: TEST_MAIL,
-        pass: TEST_PASSWORD
+        user: 'maida.goyette41@ethereal.email',
+        pass: 'U3wb7Fj85kjCmAspCH'
     }
 });
 

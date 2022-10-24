@@ -4,6 +4,7 @@ const socket = io();
 // --------- JS ---------
 
 $('body').on('click', '.cartAddButton', (e) => {
+
     let idToAdd = e.currentTarget.childNodes[1].innerHTML;
 
     fetch(`/cart/products/${idToAdd}`, {

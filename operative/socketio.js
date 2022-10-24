@@ -2,7 +2,6 @@ const { initSetupLite } = require("../db/setup/dbsqliteSetup.js");
 const knexLite = require("knex")(initSetupLite);
 
 
-
 const mainSocket = (socket) => {
     console.log("New Connection");
   

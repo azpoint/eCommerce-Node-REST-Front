@@ -1,3 +1,4 @@
+const envConfig = require("../envConfig");
 const express = require("express");
 const { Router } = express;
 const session = require("express-session");
@@ -5,7 +6,6 @@ const passport = require("passport");
 const { Strategy: LocalStrategy } = require("passport-local");
 const { createHash, passwordValidation } = require("../misc/cryptoHash");
 const flash = require("connect-flash");
-const envConfig = require("../envConfig");
 const upload = require("../misc/uploadMiddleware");
 const { v4: uuidv4 } = require("uuid");
 const sharp = require("sharp");
@@ -19,7 +19,6 @@ const dbUser = require("../db/mongo/models/userModel");
 const MongoStore = require("connect-mongo");
 
 //--------Middlewares --------
-
 mainRouter.use(
   session({
     store: MongoStore.create({
@@ -67,7 +66,6 @@ passport.use(
   new LocalStrategy(
     { passReqToCallback: true },
     (req, username, password, done) => {
-      console.log(req.body);
 
       if (!req.file) {
         return done(null, false, { message: "Please upload a picture" });
@@ -143,7 +141,6 @@ passport.deserializeUser((id, done) => {
 //------- ROUTER --------
 
 mainRouter.get("/", (req, res) => {
-  console.log(req.user);
 
   db.then((_) => productModel.find()).then((resp) => {
     let productList = resp;
@@ -197,15 +194,16 @@ mainRouter.get("/logout", (req, res) => {
 });
 
 mainRouter.get("/info", (req, res) => {
-  return res.json({
-    envArgs: envConfig,
+
+  return res.render("info", {
+    envConf: envConfig,
     OS: process.platform,
     NodeVersion: process.version,
     ReservedMemory: process.memoryUsage().rss,
     ExecPath: process.execPath,
     Process_id: process.pid,
     Working_dir: process.cwd(),
-  });
+  })
 });
 
 module.exports = mainRouter;

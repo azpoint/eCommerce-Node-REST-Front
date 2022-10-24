@@ -49,6 +49,14 @@ class CartModel {
       });
   }
 
+  saveOrder(userId, order) {
+    return this.db.then( _ => this.model.findOne({ _id: userId }))
+    .then( resp => {
+      resp.orders.push(order)
+      resp.save()
+    });
+  }
+
   deleteById(userId, id) {
     return this.db
       .then((_) => this.model.findOne({ _id: userId }))

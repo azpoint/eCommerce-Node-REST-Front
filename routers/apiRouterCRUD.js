@@ -9,24 +9,19 @@ const apiRouter = Router();
 
 const productsMongo = new ProductsMongo(db, productModel);
 
-// ------- ROUTER --------
+// ------- CRUD ENDPOINTS --------
 
-// apiRouter.use((req, res, next) => {
-//     if (req.user && req.user.admin) {
-//       return next();
-//     }
+// ------- GET --------
   
-//     return res.status(403).json( { message: 'Log as admin to retrieve this service' } );
-//   });
-  
-apiRouter.get("/productos/", (req, res) => {
+apiRouter.get("/", (req, res) => {
+    console.log(req.user)
     return productsMongo.getAll()
     .then((productList) => {
         return res.status(200).json(productList);
     })
 })
 
-apiRouter.get("/productos/:id", (req, res) => {
+apiRouter.get("/:id", (req, res) => {
     return productsMongo.getById(req.params.id)
     .then( singleProduct => {
         return res.status(200).json( singleProduct);
@@ -35,7 +30,20 @@ apiRouter.get("/productos/:id", (req, res) => {
     }) 
 })
 
-apiRouter.post("/productos", (req, res) => {
+apiRouter.get("/categoria/:category", (req, res) => {
+    return productsMongo.getCategory(req.params.category)
+    .then( resp => {
+        if(resp.length !== 0) {
+            return res.status(200).json(resp);            
+        }
+
+        return res.status(400).json( { message: "Whoops, please provide a valid category" } )
+    })
+})
+
+// -------- POST --------
+
+apiRouter.post("/", (req, res) => {
 
     let productToAdd = {
         title: req.body.title,
@@ -58,7 +66,9 @@ apiRouter.post("/productos", (req, res) => {
     })
 })
 
-apiRouter.put("/productos/:id", (req,res) => {
+// ---------- PUT ---------
+
+apiRouter.put("/:id", (req,res) => {
 
     let productUpdate = req.body;
 
@@ -73,7 +83,7 @@ apiRouter.put("/productos/:id", (req,res) => {
             return res.status(200).json(resp)
         })
     }).catch( e => {
-        return res.status(400).json( { message: 'You need to provide a json format object with one or more keys in the following format',
+        return res.status(400).json( { message: 'You need to provide a valid id in the URL and a json format object with one or more keys in the following format',
         json_Format: {  title: "String",
                         price: "Number",
                         thumbnail: "String",
@@ -83,7 +93,9 @@ apiRouter.put("/productos/:id", (req,res) => {
     })
 })
 
-apiRouter.delete("/productos/:id", (req, res) => {
+// --------- DELETE -------
+
+apiRouter.delete("/:id", (req, res) => {
     return productsMongo.deleteById(req.params.id)
     .then(resp => {
         if(resp.acknowledged === true) {
@@ -94,15 +106,5 @@ apiRouter.delete("/productos/:id", (req, res) => {
     }) 
 })
 
-apiRouter.get("/productos/categoria/:category", (req, res) => {
-    return productsMongo.getCategory(req.params.category)
-    .then( resp => {
-        if(resp.length !== 0) {
-            return res.status(200).json(resp);            
-        }
 
-        return res.status(400).json( { message: "Whoops, please provide a valid category" } )
-    })
-})
-
-  module.exports = apiRouter;
+module.exports = apiRouter;
