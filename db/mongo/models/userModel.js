@@ -10,6 +10,7 @@ const userSchema = new Schema({
   username: { type: String, required: true, max: 20 },
   password: { type: String, required: true },
   alias: { type: String, required: true, max: 12 },
+  token: { type: String },
   avatar: { type: String, required: true },
   admin: { type: Boolean, required: true },
   cart: [cartSchema],

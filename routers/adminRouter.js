@@ -20,14 +20,17 @@ adminRouter.use((req, res, next) => {
 });
 
 adminRouter.get("/", (req, res) => {
+
   let logName = "";
   let avatarDir = "";
+  let userToken = '';
 
   if (req.user && req.user.alias) {
     logName = req.user.alias;
     avatarDir = req.user.avatar;
+    userToken = req.user.token;
   }
-  return res.render("adminPanels", { logName, avatarDir });
+  return res.render("adminPanels", { logName, avatarDir, userToken });
 });
 
 adminRouter.get("/products", (req, res) => {

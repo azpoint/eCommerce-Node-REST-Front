@@ -40,10 +40,12 @@ cartRouter.get("/products", (req, res) => {
   let cartAmount = 0;
   let logName = "";
   let avatarDir = "";
+  let userToken = '';
 
   if (req.user && req.user.alias) {
     logName = req.user.alias;
     avatarDir = req.user.avatar;
+    userToken = req.user.token;
   }
 
   if (!req.user) {
@@ -75,12 +77,7 @@ cartRouter.get("/products", (req, res) => {
 
       cartAmount.toFixed(2);
 
-      res.render("cartList", {
-        cartListRender,
-        cartAmount,
-        logName,
-        avatarDir,
-      });
+      res.render("cartList", { cartListRender, cartAmount, logName, avatarDir, userToken });
     })();
   });
 });

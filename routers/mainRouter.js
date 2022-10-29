@@ -9,6 +9,7 @@ const flash = require("connect-flash");
 const upload = require("../misc/uploadMiddleware");
 const { v4: uuidv4 } = require("uuid");
 const sharp = require("sharp");
+const jwt = require('jsonwebtoken');
 
 const mainRouter = Router();
 // -------- DB --------
@@ -19,8 +20,7 @@ const dbUser = require("../db/mongo/models/userModel");
 const MongoStore = require("connect-mongo");
 
 //--------Middlewares --------
-mainRouter.use(
-  session({
+mainRouter.use(session({
     store: MongoStore.create({
       mongoUrl: `mongodb+srv://AZL:${envConfig.mongo_pass}@cluster0.wtqnueb.mongodb.net/mongo-sessions?retryWrites=true&w=majority`,
     }),
@@ -38,13 +38,9 @@ mainRouter.use(passport.session());
 
 // -------- PASSPORT --------
 
-passport.use(
-  "login",
-  new LocalStrategy(
-    { passReqToCallback: true },
-    (req, username, password, done) => {
-      return dbUser
-        .findOne({ username })
+passport.use("login", new LocalStrategy({ passReqToCallback: true }, (req, username, password, done) => {
+
+      return dbUser.findOne({ username })
         .then((user) => {
           if (!user) {
             return done(null, false, { message: "Wrong or inexistent user" });
@@ -54,18 +50,23 @@ passport.use(
             return done(null, false, { message: "Wrong password" });
           }
 
-          return done(null, user);
+          const jwtToken = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, { expiresIn: '24h'})
+
+          user.token = jwtToken
+
+          return user.save().then((user) => {
+            console.log("Login Done");
+            return done(null, user);
+          })
+
+          // return done(null, user);
         })
         .catch((err) => done(err));
     }
   )
 );
 
-passport.use(
-  "signup",
-  new LocalStrategy(
-    { passReqToCallback: true },
-    (req, username, password, done) => {
+passport.use("signup",new LocalStrategy({ passReqToCallback: true }, (req, username, password, done) => {
 
       if (!req.file) {
         return done(null, false, { message: "Please upload a picture" });
@@ -114,9 +115,7 @@ passport.use(
           newDbUser.admin = false;
         }
 
-        return newDbUser
-          .save()
-          .then((user) => {
+        return newDbUser.save().then((user) => {
             console.log("Signup Done");
             return done(null, user);
           })
@@ -141,18 +140,20 @@ passport.deserializeUser((id, done) => {
 //------- ROUTER --------
 
 mainRouter.get("/", (req, res) => {
-
+  
   db.then((_) => productModel.find()).then((resp) => {
     let productList = resp;
     let logName = "";
     let avatarDir = "";
+    let userToken = '';
 
     if (req.user && req.user.alias) {
       logName = req.user.alias;
       avatarDir = req.user.avatar;
+      userToken = req.user.token;
     }
 
-    return res.render("index", { productList, logName, avatarDir });
+    return res.render("index", { productList, logName, avatarDir, userToken });
   });
 });
 
@@ -161,9 +162,7 @@ mainRouter.get("/login", (req, res) => {
   return res.render("login", { message: req.flash("error") });
 });
 
-mainRouter.post(
-  "/login",
-  passport.authenticate("login", {
+mainRouter.post("/login", passport.authenticate("login", {
     successRedirect: "/",
     failureRedirect: "/login",
     failureFlash: true,
@@ -174,10 +173,7 @@ mainRouter.get("/signup", (req, res) => {
   return res.render("signup", { message: req.flash("error") });
 });
 
-mainRouter.post(
-  "/signup",
-  upload.single("avatar-image"),
-  passport.authenticate("signup", {
+mainRouter.post("/signup", upload.single("avatar-image"), passport.authenticate("signup", {
     successRedirect: "/",
     failureRedirect: "/signup",
     failureFlash: true,

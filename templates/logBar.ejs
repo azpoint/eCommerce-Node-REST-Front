@@ -11,4 +11,8 @@
     <% } else if (!logName) { %>
         <button class="logButton" onclick="window.location.href='/login'">Login</button>
     <% } %>
+    
+    <% if(userToken) { %>
+        <h3>API-REST-KEY (Valid for 24Hrs): <p class="apiKey"><%- userToken %></p></h3>
+    <% } %>
 </div>

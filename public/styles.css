@@ -121,7 +121,8 @@ button:hover {
     background-color: rgb(221, 221, 221);
     max-width: 800px;
     margin: 0 auto;
-    display:flex;
+    display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     border-radius: 0 0 1rem 1rem;
@@ -133,6 +134,12 @@ button:hover {
 
 .logBar img {
     width: 100px;
+}
+
+.logBar .apiKey {
+    margin: 0 2rem;
+    word-break: break-all;
+    color: red;
 }
 
 .logButton {

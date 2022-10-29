@@ -1,25 +1,31 @@
 const express = require("express");
 const { Router } = express;
 
-const ProductsMongo = require("../operative/productHandlerMongo");
 const db = require("../db/mongo/db");
+const ProductsMongo = require("../operative/productHandlerMongo");
 const productModel = require("../db/mongo/models/productsModel");
+const AuthMiddleware = require('../Middlewares/jwtAuthMiddleware.js');
 
-const apiRouter = Router();
+// -------- APP --------
 
 const productsMongo = new ProductsMongo(db, productModel);
+const apiRouter = Router();
+const authMiddleware = new AuthMiddleware(process.env.JWT_SECRET);
+
+// -------- MIDDLEWARES ---------
+
+apiRouter.use(authMiddleware.verifyToken);
 
 // ------- CRUD ENDPOINTS --------
-
 // ------- GET --------
   
 apiRouter.get("/", (req, res) => {
-    console.log(req.user)
+
     return productsMongo.getAll()
     .then((productList) => {
         return res.status(200).json(productList);
     })
-})
+});
 
 apiRouter.get("/:id", (req, res) => {
     return productsMongo.getById(req.params.id)
@@ -28,7 +34,7 @@ apiRouter.get("/:id", (req, res) => {
     }).catch(e => {
         res.status(400).json( { message: 'Whoops, please provida a valid product id'});
     }) 
-})
+});
 
 apiRouter.get("/categoria/:category", (req, res) => {
     return productsMongo.getCategory(req.params.category)
@@ -39,7 +45,7 @@ apiRouter.get("/categoria/:category", (req, res) => {
 
         return res.status(400).json( { message: "Whoops, please provide a valid category" } )
     })
-})
+});
 
 // -------- POST --------
 
@@ -64,7 +70,7 @@ apiRouter.post("/", (req, res) => {
                     }
         } );
     })
-})
+});
 
 // ---------- PUT ---------
 
@@ -91,7 +97,7 @@ apiRouter.put("/:id", (req,res) => {
                     }
         } );
     })
-})
+});
 
 // --------- DELETE -------
 
@@ -104,7 +110,7 @@ apiRouter.delete("/:id", (req, res) => {
     }).catch(e => {
         res.status(400).json( { message: 'Whoops, please provida a valid product id'});
     }) 
-})
+});
 
 
 module.exports = apiRouter;

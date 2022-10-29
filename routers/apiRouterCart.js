@@ -11,21 +11,9 @@ const productsMongo = new ProductsMongo(db, productModel);
 
 
 
-// --------- ENDPOINTS AUTH ---------
-
-// apiRouterCart.use((req, res, next) => {
-//     console.log(req.user)
-
-//     if (req.user && req.user.admin) {
-//       return next();
-//     }
-  
-//     return res.status(403).json( { message: 'Log as admin in the web service to retrieve this service' } );
-//   });
-
-  apiRouterCart.get("/", (req, res) => {
-    console.log(req.user)
-  })
+apiRouterCart.get("/", (req, res) => {
+  console.log(req.user)
+})
 
 
 // --------- CART ENDPOINTS---------
