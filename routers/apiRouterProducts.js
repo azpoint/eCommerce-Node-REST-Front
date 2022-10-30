@@ -1,24 +1,22 @@
+const envConfig = require("../envConfig");
 const express = require("express");
 const { Router } = express;
 
+// -------- APP --------
 const db = require("../db/mongo/db");
 const ProductsMongo = require("../operative/productHandlerMongo");
 const productModel = require("../db/mongo/models/productsModel");
-const AuthMiddleware = require('../Middlewares/jwtAuthMiddleware.js');
-
-// -------- APP --------
-
 const productsMongo = new ProductsMongo(db, productModel);
+const AuthMiddleware = require('../Middlewares/jwtAuthMiddleware.js');
+const authMiddleware = new AuthMiddleware(envConfig.jwt_secret);
+
 const apiRouter = Router();
-const authMiddleware = new AuthMiddleware(process.env.JWT_SECRET);
 
 // -------- MIDDLEWARES ---------
-
-apiRouter.use(authMiddleware.verifyToken);
+apiRouter.use(authMiddleware.verifyToken.bind(authMiddleware));
 
 // ------- CRUD ENDPOINTS --------
-// ------- GET --------
-  
+// ------- GET --------  
 apiRouter.get("/", (req, res) => {
 
     return productsMongo.getAll()
@@ -48,7 +46,6 @@ apiRouter.get("/categoria/:category", (req, res) => {
 });
 
 // -------- POST --------
-
 apiRouter.post("/", (req, res) => {
 
     let productToAdd = {
@@ -73,7 +70,6 @@ apiRouter.post("/", (req, res) => {
 });
 
 // ---------- PUT ---------
-
 apiRouter.put("/:id", (req,res) => {
 
     let productUpdate = req.body;
@@ -100,7 +96,6 @@ apiRouter.put("/:id", (req,res) => {
 });
 
 // --------- DELETE -------
-
 apiRouter.delete("/:id", (req, res) => {
     return productsMongo.deleteById(req.params.id)
     .then(resp => {

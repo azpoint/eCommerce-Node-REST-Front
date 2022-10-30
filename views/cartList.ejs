@@ -22,6 +22,8 @@
       $('body').on('click', '.cartAddButton', (e) => {
           let idToRemove = e.currentTarget.childNodes[1].innerHTML;
 
+          console.log(idToRemove)
+
           fetch(`/cart/products/${idToRemove}`, {
             method: 'delete',
             headers: { 'Content-Type' : 'application/json' },
@@ -38,6 +40,10 @@
                 headers: { 'Content-Type': 'application/json' },
                 cache: 'no-cache'
             })
+            
+            setTimeout(() => {window.location.href = '/cart/success/'}, 500);
+
+            
         })
   </script>        
 </body>

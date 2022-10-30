@@ -34,7 +34,7 @@ class CartModel {
   itemCheck(userId, productId) {
     return this.db
       .then((_) => this.model.findOne({ _id: userId }))
-      .then((resp) => {
+      .then(resp => {
         return resp.cart.find((element) => {
           return element.product_Id === productId;
         });
@@ -53,7 +53,7 @@ class CartModel {
     return this.db.then( _ => this.model.findOne({ _id: userId }))
     .then( resp => {
       resp.orders.push(order)
-      resp.save()
+      return resp.save()
     });
   }
 
@@ -61,11 +61,26 @@ class CartModel {
     return this.db
       .then((_) => this.model.findOne({ _id: userId }))
       .then((resp) => {
+        let cartLength = resp.cart.length
         resp.cart = resp.cart.filter((product) => {
           return product.product_Id !== id;
         });
-        return resp.save();
+
+        if(resp.cart.length < cartLength) {
+          resp.save()
+          return true;
+        }
+
+        return false;
       });
+  }
+
+  deleteCart(userId) {
+    return this.db.then(_ => this.model.findOne({ _id: userId }))
+    .then(resp => {
+      resp.cart = []
+      return resp.save()
+    })
   }
 }
 

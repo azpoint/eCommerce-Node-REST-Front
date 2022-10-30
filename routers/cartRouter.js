@@ -10,11 +10,11 @@ const productModel = require("../db/mongo/models/productsModel");
 const userModel = require("../db/mongo/models/userModel");
 const envConfig = require("../envConfig");
 
-const cartRouter = Router();
-
 const cart = new CartModel(db, userModel);
 const productsMongo = new ProductsMongo(db, productModel);
 const MongoStore = require("connect-mongo");
+
+const cartRouter = Router();
 
 // -------- SESSION --------
 
@@ -126,14 +126,10 @@ cartRouter.post("/buynow/:buy", (req, res) => {
       for (let item of resp2) {
         for (let item2 of resp) {
           if (item._id == item2.product_Id) {
-            item.qty = item2.qty;
+            cartAmount += item.price * item2.qty;
           }
         }
       }
-
-      cartListOrder.forEach((item) => {
-        cartAmount += item.price * item.qty;
-      });
 
       
       const mailOptions = {
@@ -150,6 +146,7 @@ cartRouter.post("/buynow/:buy", (req, res) => {
                 <p>Items: <ul>${resp2.map(item => `<li>${item.title} - USD$${item.price}</li>`)}</ul></p>
                 <p>Date: ${orderPlaced.date}</p>
                 <p>State: ${orderPlaced.state}</p>
+                <p>Amount: USD$ ${cartAmount}
               `,
       };
 
@@ -167,11 +164,19 @@ cartRouter.post("/buynow/:buy", (req, res) => {
   
       sendMail();
 
+      ;(async () => {
+        await cart.deleteCart(req.user._id)
+      })();      
+
       return cart.saveOrder(req.user._id, orderPlaced);
 
     })
 
   });
 });
+
+cartRouter.get('/success', (req, res) => {
+  return res.render("success", { message: 'Please check you email'})
+})
 
 module.exports = cartRouter;

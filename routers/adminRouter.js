@@ -16,7 +16,7 @@ adminRouter.use((req, res, next) => {
     return next();
   }
 
-  return res.render("error", { message: "Necesitas ser Administrador" });
+  return res.render("error", { message: "You need to be an admin to access this" });
 });
 
 adminRouter.get("/", (req, res) => {

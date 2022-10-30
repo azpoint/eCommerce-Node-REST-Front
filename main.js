@@ -14,7 +14,7 @@ const cartRouter = require("./routers/cartRouter.js");
 const adminRouter = require("./routers/adminRouter.js");
 const randomRouter = require("./routers/randomRouter.js");
 const mainSocket = require("./operative/socketIO.js");
-const apiRouter = require("./routers/apiRouterCRUD.js");
+const apiRouter = require("./routers/apiRouterProducts.js");
 const apiRouterCart = require("./routers/apiRouterCart.js");
 
 //------- APP -------
