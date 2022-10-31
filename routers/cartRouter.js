@@ -3,7 +3,7 @@ const { Router } = express;
 const CartModel = require("../operative/cartBuilder");
 const ProductsMongo = require("../operative/productHandlerMongo");
 const session = require("express-session");
-const { TEST_MAIL, transporter } = require("../misc/nodeMailerConfig");
+const { systemMail, transporter } = require("../misc/nodeMailerConfig");
 
 const db = require("../db/mongo/db");
 const productModel = require("../db/mongo/models/productsModel");
@@ -133,7 +133,7 @@ cartRouter.post("/buynow/:buy", (req, res) => {
 
       
       const mailOptions = {
-        from: TEST_MAIL,
+        from: systemMail,
         to: req.user.username,
         subject: `Nuevo pedido de ${req.user.alias} - ${req.user.username}`,
         html: `

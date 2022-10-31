@@ -13,6 +13,7 @@ const authMiddleware = new AuthMiddleware(envConfig.jwt_secret);
 const apiRouter = Router();
 
 // -------- MIDDLEWARES ---------
+// ----- La inyeccion de la variable envConfig.jwt_secret no funcionaba aqui hasta que hice el bind, pero no entiendo como funciona ni que hace. Me llegaba undefined.
 apiRouter.use(authMiddleware.verifyToken.bind(authMiddleware));
 
 // ------- CRUD ENDPOINTS --------

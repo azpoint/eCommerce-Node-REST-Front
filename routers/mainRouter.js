@@ -19,6 +19,7 @@ const productModel = require("../db/mongo/models/productsModel");
 const dbUser = require("../db/mongo/models/userModel");
 const MongoStore = require("connect-mongo");
 
+
 //--------Middlewares --------
 mainRouter.use(session({
     store: MongoStore.create({
@@ -27,6 +28,7 @@ mainRouter.use(session({
     secret: "claveDude",
     resave: true,
     saveUninitialized: true,
+    // ---- envConfig.session_max | Esta variable no funciona y rompe la app 
     cookie: { maxAge: 600000 },
   })
 );

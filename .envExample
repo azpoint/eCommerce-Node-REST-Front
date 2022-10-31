@@ -1,2 +1,15 @@
-PORT=
+# Server port, 8080 by default
+PORT=8585
+
+# Time of client session in seconds - 600000 by default
+SESSION_MAX=
+
+# DB password
 MONGO_ATLAS_PASS=
+# JWT Secret Key
+JWT_SECRET=
+
+SYSTEM_MAIL=
+SYSTEM_MAIL_PASS=
+SYSTEM_MAIL_PORT=
+SYSTEM_MAIL_HOST=

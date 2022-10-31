@@ -34,6 +34,16 @@ adminRouter.get("/", (req, res) => {
 });
 
 adminRouter.get("/products", (req, res) => {
+  let logName = "";
+  let avatarDir = "";
+  let userToken = '';
+
+  if (req.user && req.user.alias) {
+    logName = req.user.alias;
+    avatarDir = req.user.avatar;
+    userToken = req.user.token;
+  }
+
   if (req.query.idString == "") {
     // ;(async () => {
     //     const productList = await productsMongo.getAll()
@@ -47,12 +57,13 @@ adminRouter.get("/products", (req, res) => {
 
   return productsMongo.getById(req.query.idString).then((resp) => {
     if (resp == []) {
-      let message = "This product does not exist";
-      res.render("error", { message });
+    res.render("error", { message: "This product does not exist" });
     }
     let productList = resp;
     return res.render("adminProducts", { productList, logName });
-  });
+  }).catch(err => {
+    res.render("error", { message: "This product does not exist" });
+  })
 });
 
 adminRouter.post("/products", (req, res, next) => {
@@ -72,8 +83,7 @@ adminRouter.post("/products", (req, res, next) => {
         productList,
         message: "Product added successfully",
       });
-    })
-    .catch((resp) => {
+    }).catch((resp) => {
       let message = resp.message;
       return res.render("error", { message });
     });
@@ -84,8 +94,7 @@ adminRouter.post("/products/delete", (req, res) => {
     .deleteById(req.body.id)
     .then((_) => {
       return res.render("adminDeleteResponse", { message: "Product Deleted" });
-    })
-    .catch((err) => {
+    }).catch((err) => {
       return res.render("error", {
         message: "The product you inserted does not exist",
       });
@@ -120,10 +129,9 @@ adminRouter.post("/products/put", (req, res) => {
           });
         });
       }
-    })
-    .catch((resp) => {
+    }).catch((resp) => {
       return res.render("error", {
-        message: `This product does not exist: \n${resp.message}`,
+        message: `This product does not exist.`,
       });
     });
 });

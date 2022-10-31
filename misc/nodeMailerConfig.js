@@ -1,15 +1,17 @@
-const nodemailer = require('nodemailer')
+const envConfig = require("../envConfig");
+const nodemailer = require('nodemailer');
 
-const TEST_MAIL = 'maida.goyette41@ethereal.email'
-const TEST_PASSWORD = 'U3wb7Fj85kjCmAspCH'
+const systemMail = envConfig.system_mail
 
 const transporter = nodemailer.createTransport({
+    // ---- envConfig.system_mail_host | Esta variable no funciona y rompe la app 
     host: 'smtp.ethereal.email',
+    // ---- envConfig.system_mail_port | Esta variable no funciona y rompe la app 
     port: 587,
     auth: {
-        user: 'maida.goyette41@ethereal.email',
-        pass: 'U3wb7Fj85kjCmAspCH'
+        user: systemMail,
+        pass: envConfig.system_mail_pass
     }
 });
 
-module.exports = { TEST_MAIL, TEST_PASSWORD, transporter }
+module.exports = { systemMail, transporter }
